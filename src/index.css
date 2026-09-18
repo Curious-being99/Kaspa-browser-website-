@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Custom glow and grid background effects */
+.bg-grid-pattern {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(112, 199, 186, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(112, 199, 186, 0.05) 1px, transparent 1px);
+}
+
+.radar-sweep {
+  animation: radar 4s linear infinite;
+}
+
+@keyframes radar {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0C0D10;
+}
+::-webkit-scrollbar-thumb {
+  background: #282C37;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #49A89A;
+}

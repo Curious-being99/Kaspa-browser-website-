@@ -1,0 +1,6 @@
+{
+  "name": "Kaspa Browser",
+  "description": "Official website for KaspaBrowser - Decentralized Android Web Browser & Mesh-Integrated Ecosystem with native Kaspa BlockDAG wallet and auto GitHub release downloader.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
