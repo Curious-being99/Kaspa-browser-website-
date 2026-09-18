@@ -8,11 +8,11 @@ import {
 
 export async function fetchLatestRelease(): Promise<GitHubRelease> {
   try {
-    const timestamp = Date.now();
     // 1. Fetch releases list directly to ensure we sort by published date
-    const listResponse = await fetch(`${GITHUB_API_BASE}/releases?_t=${timestamp}`, {
-      cache: 'no-store',
-      headers: { 'Accept': 'application/vnd.github.v3+json' }
+    const listResponse = await fetch(`${GITHUB_API_BASE}/releases`, {
+      headers: { 
+        'Accept': 'application/vnd.github.v3+json' 
+      }
     });
 
     if (listResponse.ok) {
@@ -29,8 +29,7 @@ export async function fetchLatestRelease(): Promise<GitHubRelease> {
     }
 
     // 2. Fallback to /releases/latest endpoint if list failed
-    const response = await fetch(`${GITHUB_API_BASE}/releases/latest?_t=${timestamp}`, {
-      cache: 'no-store',
+    const response = await fetch(`${GITHUB_API_BASE}/releases/latest`, {
       headers: {
         'Accept': 'application/vnd.github.v3+json'
       }
@@ -43,7 +42,7 @@ export async function fetchLatestRelease(): Promise<GitHubRelease> {
 
     return DEFAULT_LATEST_RELEASE;
   } catch (err) {
-    console.warn('GitHub API fetch failed, using verified fallback data:', err);
+    console.debug('GitHub API rate limit or network offline, using fallback data:', err);
     return DEFAULT_LATEST_RELEASE;
   }
 }
