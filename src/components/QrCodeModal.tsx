@@ -20,7 +20,9 @@ export const QrCodeModal: React.FC<QrCodeModalProps> = ({
 
   const preferredAsset = latestRelease ? getPreferredDownloadAsset(latestRelease) : null;
   const downloadUrl = preferredAsset?.browser_download_url || 
-    `https://github.com/Curious-being99/Kaspa-browser-/releases/download/${latestRelease?.tag_name || 'v1.0.20260913101524'}/KaspaBrowser-release-signed.apk`;
+    (latestRelease?.tag_name 
+      ? `https://github.com/Curious-being99/Kaspa-browser-/releases/download/${latestRelease.tag_name}/KaspaBrowser-release-signed.apk`
+      : `https://github.com/Curious-being99/Kaspa-browser-/releases/latest/download/KaspaBrowser-release-signed.apk`);
 
   // Encode QR URL using google chart API or high reliability QR proxy
   const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(downloadUrl)}&bgcolor=14-16-28&color=112-199-186&margin=10`;

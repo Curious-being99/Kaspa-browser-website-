@@ -6,25 +6,25 @@ export const GITHUB_API_BASE = 'https://api.github.com/repos/Curious-being99/Kas
 
 // Static fallback in case GitHub API rate limit is exceeded
 export const DEFAULT_LATEST_RELEASE: GitHubRelease = {
-  id: 391454033,
-  tag_name: 'v1.0.20260918122337',
-  name: 'KaspaBrowser v1.0.20260918122337',
-  published_at: '2026-09-18T12:23:43Z',
-  html_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/tag/v1.0.20260918122337',
+  id: 391695427,
+  tag_name: 'v1.0.20260918183336',
+  name: 'KaspaBrowser v1.0.20260918183336',
+  published_at: '2026-09-18T18:33:41Z',
+  html_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/tag/v1.0.20260918183336',
   prerelease: false,
-  body: `**Full Changelog**: https://github.com/Curious-being99/Kaspa-browser-/compare/v1.0.20260917083803...v1.0.20260918122337\nLatest version fix bug and security but wallet not yet active`,
-  tarball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/tarball/v1.0.20260918122337',
-  zipball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/zipball/v1.0.20260918122337',
+  body: `**Full Changelog**: https://github.com/Curious-being99/Kaspa-browser-/compare/v1.0.20260918122337...v1.0.20260918183336\n\nfix: improve reader mode stability and add theme persistence\n- Encode JS extraction output to prevent parsing failures in Android.\n- Implement SharedPreference persistence for browser theme settings.\n- Add Palette icon for theme customization UI.\n- and wallet not yet active yet`,
+  tarball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/tarball/v1.0.20260918183336',
+  zipball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/zipball/v1.0.20260918183336',
   assets: [
     {
-      id: 572578938,
+      id: 573209817,
       name: 'KaspaBrowser-release-signed.apk',
-      size: 23917823,
-      download_count: 1,
+      size: 23934207,
+      download_count: 4,
       content_type: 'application/vnd.android.package-archive',
-      created_at: '2026-09-18T12:23:41Z',
-      browser_download_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/download/v1.0.20260918122337/KaspaBrowser-release-signed.apk',
-      digest: 'sha256:0b535ecc3edf685c4c0349b31e909a9fc49dffcf2a83de10b49b2e9640053681'
+      created_at: '2026-09-18T18:33:40Z',
+      browser_download_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/download/v1.0.20260918183336/KaspaBrowser-release-signed.apk',
+      digest: 'sha256:444c6368931c6d303f991ecc8194b9e0753c0d4010691bc7328486b364ad980f'
     }
   ]
 };

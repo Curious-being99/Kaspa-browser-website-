@@ -9,6 +9,26 @@ import {
 export async function fetchLatestRelease(): Promise<GitHubRelease> {
   try {
     const timestamp = Date.now();
+    // 1. Fetch releases list directly to ensure we sort by published date
+    const listResponse = await fetch(`${GITHUB_API_BASE}/releases?_t=${timestamp}`, {
+      cache: 'no-store',
+      headers: { 'Accept': 'application/vnd.github.v3+json' }
+    });
+
+    if (listResponse.ok) {
+      const releases: GitHubRelease[] = await listResponse.json();
+      if (releases && releases.length > 0) {
+        // Sort explicitly by published_at or created_at descending to guarantee absolute newest
+        const sorted = [...releases].sort((a, b) => {
+          const dateA = new Date(a.published_at || a.created_at || 0).getTime();
+          const dateB = new Date(b.published_at || b.created_at || 0).getTime();
+          return dateB - dateA;
+        });
+        return sorted[0];
+      }
+    }
+
+    // 2. Fallback to /releases/latest endpoint if list failed
     const response = await fetch(`${GITHUB_API_BASE}/releases/latest?_t=${timestamp}`, {
       cache: 'no-store',
       headers: {
@@ -16,23 +36,12 @@ export async function fetchLatestRelease(): Promise<GitHubRelease> {
       }
     });
 
-    if (!response.ok) {
-      // If /latest returns 404 or fails, fallback to querying all releases
-      const listResponse = await fetch(`${GITHUB_API_BASE}/releases?_t=${timestamp}`, {
-        cache: 'no-store',
-        headers: { 'Accept': 'application/vnd.github.v3+json' }
-      });
-      if (listResponse.ok) {
-        const releases: GitHubRelease[] = await listResponse.json();
-        if (releases && releases.length > 0) {
-          return releases[0];
-        }
-      }
-      return DEFAULT_LATEST_RELEASE;
+    if (response.ok) {
+      const data: GitHubRelease = await response.json();
+      return data;
     }
 
-    const data: GitHubRelease = await response.json();
-    return data;
+    return DEFAULT_LATEST_RELEASE;
   } catch (err) {
     console.warn('GitHub API fetch failed, using verified fallback data:', err);
     return DEFAULT_LATEST_RELEASE;
@@ -100,35 +109,37 @@ export function getPreferredDownloadAsset(release: GitHubRelease) {
     }
   }
 
-  if (!release.assets || release.assets.length === 0) {
-    // Generate direct download URL for the target release tag
-    return {
-      name: 'KaspaBrowser-release-signed.apk',
-      browser_download_url: `https://github.com/Curious-being99/Kaspa-browser-/releases/download/${release.tag_name}/KaspaBrowser-release-signed.apk`,
-      size: 23917823,
-      digest: `sha256:${extractedSha}`
-    };
+  const tagName = release.tag_name || 'latest';
+
+  // 1. First priority: Look for signed APK asset in the release payload
+  if (release.assets && release.assets.length > 0) {
+    const signedApk = release.assets.find(a => 
+      a.name.toLowerCase().endsWith('.apk') && a.name.toLowerCase().includes('signed')
+    );
+    if (signedApk && signedApk.browser_download_url) {
+      return {
+        ...signedApk,
+        digest: signedApk.digest || `sha256:${extractedSha}`
+      };
+    }
+
+    // 2. Second priority: Any .apk asset attached to this release
+    const anyApk = release.assets.find(a => a.name.toLowerCase().endsWith('.apk'));
+    if (anyApk && anyApk.browser_download_url) {
+      return {
+        ...anyApk,
+        digest: anyApk.digest || `sha256:${extractedSha}`
+      };
+    }
   }
 
-  // Find signed apk first, then any apk
-  const signedApk = release.assets.find(a => a.name.toLowerCase().includes('signed.apk'));
-  if (signedApk) {
-    return {
-      ...signedApk,
-      digest: signedApk.digest || `sha256:${extractedSha}`
-    };
-  }
-
-  const anyApk = release.assets.find(a => a.name.endsWith('.apk'));
-  if (anyApk) {
-    return {
-      ...anyApk,
-      digest: anyApk.digest || `sha256:${extractedSha}`
-    };
-  }
-
+  // 3. Guaranteed dynamic mapping to GitHub's official latest download route
   return {
-    ...release.assets[0],
+    name: 'KaspaBrowser-release-signed.apk',
+    browser_download_url: tagName !== 'latest' && tagName !== ''
+      ? `https://github.com/Curious-being99/Kaspa-browser-/releases/download/${tagName}/KaspaBrowser-release-signed.apk`
+      : `https://github.com/Curious-being99/Kaspa-browser-/releases/latest/download/KaspaBrowser-release-signed.apk`,
+    size: release.assets?.[0]?.size || 23934207,
     digest: `sha256:${extractedSha}`
   };
 }
