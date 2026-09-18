@@ -65,6 +65,8 @@ export default function App() {
     if (urlParams.get('download') === 'auto' || urlParams.get('download') === 'true') {
       setTimeout(() => {
         handleTriggerDownload();
+        // Clean URL query parameters so refreshing does not force reload/download
+        window.history.replaceState({}, document.title, window.location.pathname);
       }, 500);
     }
 
