@@ -134,14 +134,7 @@ export function getPreferredDownloadAsset(release: GitHubRelease) {
 }
 
 export function triggerBrowserDownload(url: string, filename?: string) {
-  // Use a temporary hidden iframe or invisible anchor to initiate file download
-  // without re-navigating or reloading the current page
-  const iframe = document.createElement('iframe');
-  iframe.style.display = 'none';
-  iframe.src = url;
-  document.body.appendChild(iframe);
-
-  // Fallback direct anchor click for browsers that restrict iframe binary triggers
+  // Direct hidden anchor triggering single download instance
   const link = document.createElement('a');
   link.href = url;
   link.download = filename || 'KaspaBrowser-release-signed.apk';
@@ -150,7 +143,6 @@ export function triggerBrowserDownload(url: string, filename?: string) {
   link.click();
 
   setTimeout(() => {
-    if (document.body.contains(iframe)) document.body.removeChild(iframe);
     if (document.body.contains(link)) document.body.removeChild(link);
-  }, 3000);
+  }, 1000);
 }
