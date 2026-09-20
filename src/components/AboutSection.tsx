@@ -32,13 +32,13 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#14161C] border border-[#70C7BA]/40 text-xs font-mono text-[#70C7BA]">
             <Info className="w-3.5 h-3.5" />
-            <span>ABOUT KASPABROWSER</span>
+            <span>ABOUT KASPABROWSER • ORG.KASPA.BROWSER</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Your Gateway to Explore &amp; Interact with the Kaspa Network
+            Privacy-First, Decentralized Android Web Browser &amp; Web3 Gateway
           </h2>
           <p className="text-sm sm:text-base text-gray-400 leading-relaxed">
-            KaspaBrowser is a specialized, open-source Android browser engineered to bridge standard mobile browsing with the world’s fastest decentralized Proof-of-Work BlockDAG.
+            Kaspa Browser is a privacy-first, decentralized Android web browser and Web3 gateway designed to seamlessly bridge standard web browsing with peer-to-peer decentralized technologies and the Kaspa network ecosystem.
           </p>
         </div>
 
@@ -53,10 +53,10 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                 <span>What is KaspaBrowser?</span>
               </h3>
               <p className="text-sm text-gray-300 leading-relaxed">
-                Conventional mobile web browsers are confined to legacy centralized protocols (<code className="text-[#70C7BA] font-mono text-xs">http://</code> / <code className="text-[#70C7BA] font-mono text-xs">https://</code>) and centralized DNS providers. They cannot natively interact with peer-to-peer networks or resolve decentralized protocols without third-party extensions.
+                <strong>Kaspa Browser (Package ID: <code className="text-[#70C7BA] font-mono text-xs">org.kaspa.browser</code>)</strong> is a privacy-first, decentralized Android web browser and Web3 gateway designed to seamlessly bridge standard web browsing with peer-to-peer decentralized technologies and the Kaspa network ecosystem.
               </p>
               <p className="text-sm text-gray-300 leading-relaxed">
-                <strong>KaspaBrowser changes that.</strong> Built from the ground up using <strong className="text-white">Kotlin</strong> and <strong className="text-white">Jetpack Compose (Material 3)</strong>, KaspaBrowser is a dedicated tool to browse, query, and transact across the <strong className="text-[#70C7BA]">Kaspa GHOSTDAG network</strong> and Web3 protocols directly from your Android device.
+                Built with <strong>Kotlin</strong> and <strong>Jetpack Compose (Material 3)</strong>, it unifies standard web browsing, decentralized peer-to-peer mesh discovery, cryptographic identity management, on-device local node hosting, and native Kaspa BlockDAG (KAS) wallet utilities into a fast, privacy-first mobile client.
               </p>
             </div>
 

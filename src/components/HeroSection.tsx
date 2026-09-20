@@ -74,6 +74,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <div className="lg:col-span-7 space-y-6">
             
             {/* Main Headline */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#14161C] border border-[#70C7BA]/40 text-xs font-mono text-[#70C7BA]">
+              <span className="w-2 h-2 rounded-full bg-[#70C7BA] animate-pulse" />
+              <span>Package: org.kaspa.browser</span>
+            </div>
+
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#F3F4F6] leading-[1.1]">
               The Web3 Browser Engineered for <br />
               <span className="text-[#70C7BA]">
@@ -83,10 +88,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
             {/* Subtitle */}
             <p className="text-base sm:text-lg text-gray-400 max-w-2xl leading-relaxed">
-              Open-source Android web browser powered by <strong className="text-gray-200">HTTP/3 QUIC</strong> 0-RTT transport, 
-              custom decentralized protocol interception, 
-              built-in <strong className="text-gray-200">Privacy &amp; Tracker Shield</strong>, and modern 
-              <strong className="text-gray-200"> Jetpack Compose Material 3</strong> design.
+              Kaspa Browser is a privacy-first, decentralized Android web browser and Web3 gateway designed to seamlessly bridge standard web browsing with peer-to-peer decentralized technologies and the Kaspa network ecosystem. Built with <strong className="text-gray-200">Kotlin</strong> and <strong className="text-gray-200">Jetpack Compose (Material 3)</strong>, it unifies standard web browsing, decentralized peer-to-peer mesh discovery, cryptographic identity management, on-device local node hosting, and native Kaspa BlockDAG (KAS) wallet utilities into a fast, privacy-first mobile client.
             </p>
 
             {/* Main Action Buttons */}

@@ -36,7 +36,7 @@ export const FALLBACK_RELEASES: GitHubRelease[] = [
 export const FALLBACK_REPO_META: GitHubRepoMeta = {
   name: 'Kaspa-browser-',
   full_name: 'Curious-being99/Kaspa-browser-',
-  description: 'Android web browser and decentralized network gateway built with Kotlin and Jetpack Compose (Material 3). Features HTTP/3 QUIC transport, custom protocol resolution, and privacy-first browsing.',
+  description: 'Kaspa Browser (Package ID: org.kaspa.browser) is a privacy-first, decentralized Android web browser and Web3 gateway designed to seamlessly bridge standard web browsing with peer-to-peer decentralized technologies and the Kaspa network ecosystem. Built with Kotlin and Jetpack Compose (Material 3).',
   stargazers_count: 28,
   forks_count: 6,
   open_issues_count: 0,
@@ -113,6 +113,7 @@ export const FEATURES: FeatureItem[] = [
 ];
 
 export const TECH_SPECS = [
+  { label: 'Package ID', value: 'org.kaspa.browser' },
   { label: 'Language', value: 'Kotlin 2.0+ (100% Native)' },
   { label: 'UI Framework', value: 'Jetpack Compose (Material 3)' },
   { label: 'Target Android OS', value: 'Android 16 (API 36)' },
@@ -120,14 +121,13 @@ export const TECH_SPECS = [
   { label: 'Local Persistence', value: 'AndroidX Room (SQLite)' },
   { label: 'Network Stack', value: 'OkHttp3, Cronet (HTTP/3 QUIC)' },
   { label: 'Cryptography', value: 'SHA-256, Android Keystore' },
-  { label: 'License', value: 'Apache 2.0 (Open Source)' },
-  { label: 'Package Name', value: 'com.example.kaspabrowser' }
+  { label: 'License', value: 'Apache 2.0 (Open Source)' }
 ];
 
 export const FAQS = [
   {
     q: 'What is KaspaBrowser and what are its core features?',
-    a: 'KaspaBrowser is an open-source Android browser built with Kotlin and Jetpack Compose. It features custom protocol interception, HTTP/3 QUIC zero round-trip transport, automatic HTTPS upgrading, tracker and ad script interception, and secure Room database storage.'
+    a: 'Kaspa Browser is a privacy-first, decentralized Android web browser and Web3 gateway designed to seamlessly bridge standard web browsing with peer-to-peer decentralized technologies and the Kaspa network ecosystem. Built with Kotlin and Jetpack Compose (Material 3), it unifies standard web browsing, decentralized peer-to-peer mesh discovery, cryptographic identity management, on-device local node hosting, and native Kaspa BlockDAG (KAS) wallet utilities into a fast, privacy-first mobile client.'
   },
   {
     q: 'Is the Kaspa (KAS) wallet active in the current build?',
