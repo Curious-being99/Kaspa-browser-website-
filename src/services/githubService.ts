@@ -8,41 +8,52 @@ import {
 
 export async function fetchLatestRelease(): Promise<GitHubRelease> {
   try {
-    // 1. Fetch releases list directly to ensure we sort by published date
-    const listResponse = await fetch(`${GITHUB_API_BASE}/releases`, {
-      headers: { 
-        'Accept': 'application/vnd.github.v3+json' 
-      }
-    });
+    const timestamp = Date.now();
+    
+    // Concurrently fetch both /releases/latest and /releases list to ensure absolute freshest release
+    const [latestRes, listRes] = await Promise.allSettled([
+      fetch(`${GITHUB_API_BASE}/releases/latest?_t=${timestamp}`, {
+        cache: 'no-store',
+        headers: { 'Accept': 'application/vnd.github.v3+json' }
+      }),
+      fetch(`${GITHUB_API_BASE}/releases?_t=${timestamp}`, {
+        cache: 'no-store',
+        headers: { 'Accept': 'application/vnd.github.v3+json' }
+      })
+    ]);
 
-    if (listResponse.ok) {
-      const releases: GitHubRelease[] = await listResponse.json();
-      if (releases && releases.length > 0) {
-        // Sort explicitly by published_at or created_at descending to guarantee absolute newest
-        const sorted = [...releases].sort((a, b) => {
+    let latestFromEndpoint: GitHubRelease | null = null;
+    if (latestRes.status === 'fulfilled' && latestRes.value.ok) {
+      latestFromEndpoint = await latestRes.value.json();
+    }
+
+    let newestFromList: GitHubRelease | null = null;
+    if (listRes.status === 'fulfilled' && listRes.value.ok) {
+      const releasesList: GitHubRelease[] = await listRes.value.json();
+      if (releasesList && releasesList.length > 0) {
+        const sorted = [...releasesList].sort((a, b) => {
           const dateA = new Date(a.published_at || a.created_at || 0).getTime();
           const dateB = new Date(b.published_at || b.created_at || 0).getTime();
           return dateB - dateA;
         });
-        return sorted[0];
+        newestFromList = sorted[0];
       }
     }
 
-    // 2. Fallback to /releases/latest endpoint if list failed
-    const response = await fetch(`${GITHUB_API_BASE}/releases/latest`, {
-      headers: {
-        'Accept': 'application/vnd.github.v3+json'
-      }
-    });
+    // Compare timestamps if both exist, picking whichever is newer
+    if (latestFromEndpoint && newestFromList) {
+      const timeEndpoint = new Date(latestFromEndpoint.published_at || latestFromEndpoint.created_at || 0).getTime();
+      const timeList = new Date(newestFromList.published_at || newestFromList.created_at || 0).getTime();
 
-    if (response.ok) {
-      const data: GitHubRelease = await response.json();
-      return data;
+      return timeList > timeEndpoint ? newestFromList : latestFromEndpoint;
     }
+
+    if (newestFromList) return newestFromList;
+    if (latestFromEndpoint) return latestFromEndpoint;
 
     return DEFAULT_LATEST_RELEASE;
   } catch (err) {
-    console.debug('GitHub API rate limit or network offline, using fallback data:', err);
+    console.debug('GitHub API query failed, utilizing fallback data:', err);
     return DEFAULT_LATEST_RELEASE;
   }
 }
@@ -132,13 +143,12 @@ export function getPreferredDownloadAsset(release: GitHubRelease) {
     }
   }
 
-  // 3. Guaranteed dynamic mapping to GitHub's official latest download route
+  // 3. Direct mapping to GitHub release tag download route
+  const resolvedTag = (tagName && tagName !== 'latest') ? tagName : 'v1.0.20260920031739';
   return {
     name: 'KaspaBrowser-release-signed.apk',
-    browser_download_url: tagName !== 'latest' && tagName !== ''
-      ? `https://github.com/Curious-being99/Kaspa-browser-/releases/download/${tagName}/KaspaBrowser-release-signed.apk`
-      : `https://github.com/Curious-being99/Kaspa-browser-/releases/latest/download/KaspaBrowser-release-signed.apk`,
-    size: release.assets?.[0]?.size || 23934207,
+    browser_download_url: `https://github.com/Curious-being99/Kaspa-browser-/releases/download/${resolvedTag}/KaspaBrowser-release-signed.apk`,
+    size: release.assets?.[0]?.size || 21183635,
     digest: `sha256:${extractedSha}`
   };
 }
