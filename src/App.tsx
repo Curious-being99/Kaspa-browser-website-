@@ -60,16 +60,6 @@ export default function App() {
       loadGithubData();
     }, 60000);
 
-    // Check if URL has ?download=true or ?download=auto
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('download') === 'auto' || urlParams.get('download') === 'true') {
-      setTimeout(() => {
-        handleTriggerDownload();
-        // Clean URL query parameters so refreshing does not force reload/download
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }, 500);
-    }
-
     return () => clearInterval(interval);
   }, []);
 
