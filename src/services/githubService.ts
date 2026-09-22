@@ -6,27 +6,35 @@ import {
   GITHUB_API_BASE 
 } from '../data/kaspaData';
 
-const LATEST_CACHE_KEY = 'kaspa_latest_release_v2';
-const ALL_RELEASES_CACHE_KEY = 'kaspa_all_releases_v2';
+const LATEST_CACHE_KEY = 'kaspa_latest_release_v3';
+const ALL_RELEASES_CACHE_KEY = 'kaspa_all_releases_v3';
 
 /**
- * Extracts a comparable timestamp from a release using published_at, created_at, or tag name.
+ * Extracts a normalized Unix epoch millisecond timestamp from a release.
+ * Correctly parses ISO strings as well as formatted tags like v1.0.20260922123310.
  */
 export function getReleaseTimestamp(release?: GitHubRelease | null): number {
   if (!release) return 0;
   
-  // 1. Try date properties
-  const dateVal = new Date(release.published_at || release.created_at || 0).getTime();
-  if (dateVal && !isNaN(dateVal) && dateVal > 0) {
-    return dateVal;
+  // 1. Try published_at
+  if (release.published_at) {
+    const t = new Date(release.published_at).getTime();
+    if (!isNaN(t) && t > 0) return t;
   }
 
-  // 2. Try parsing tag timestamp e.g. v1.0.20260922123310
+  // 2. Try created_at
+  if (release.created_at) {
+    const t = new Date(release.created_at).getTime();
+    if (!isNaN(t) && t > 0) return t;
+  }
+
+  // 3. Parse tag timestamp e.g. v1.0.20260922123310 -> YYYY=2026, MM=09, DD=22, HH=12, mm=33, ss=10
   if (release.tag_name) {
-    const match = release.tag_name.match(/\d{14}/);
+    const match = release.tag_name.match(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/);
     if (match) {
-      const num = parseInt(match[0], 10);
-      if (!isNaN(num)) return num;
+      const [_, year, month, day, hour, min, sec] = match;
+      const t = Date.UTC(+year, +month - 1, +day, +hour, +min, +sec);
+      if (!isNaN(t) && t > 0) return t;
     }
   }
 
@@ -55,10 +63,7 @@ function getStoredLatest(): GitHubRelease | null {
 
 function storeLatest(release: GitHubRelease) {
   try {
-    const existing = getStoredLatest();
-    if (!existing || isNewerRelease(release, existing) || release.tag_name === existing.tag_name) {
-      localStorage.setItem(LATEST_CACHE_KEY, JSON.stringify(release));
-    }
+    localStorage.setItem(LATEST_CACHE_KEY, JSON.stringify(release));
   } catch (e) {
     // Ignore storage errors
   }
@@ -85,16 +90,15 @@ function storeAllReleases(releases: GitHubRelease[]) {
   }
 }
 
+/**
+ * Fetches the freshest release directly from GitHub API.
+ * Always respects the live API result first.
+ */
 export async function fetchLatestRelease(): Promise<GitHubRelease> {
-  const stored = getStoredLatest();
-  let candidate: GitHubRelease = stored && isNewerRelease(stored, DEFAULT_LATEST_RELEASE) 
-    ? stored 
-    : DEFAULT_LATEST_RELEASE;
-
   try {
     const timestamp = Date.now();
     
-    // Concurrently fetch both /releases/latest and /releases list to ensure absolute freshest release
+    // Concurrently fetch both /releases/latest and /releases list to ensure freshest release
     const [latestRes, listRes] = await Promise.allSettled([
       fetch(`${GITHUB_API_BASE}/releases/latest?_t=${timestamp}`, {
         cache: 'no-store',
@@ -121,31 +125,32 @@ export async function fetchLatestRelease(): Promise<GitHubRelease> {
       }
     }
 
-    // Pick newest between endpoint & list
-    let fetchedNewest: GitHubRelease | null = null;
+    let liveNewest: GitHubRelease | null = null;
     if (latestFromEndpoint && newestFromList) {
-      fetchedNewest = isNewerRelease(newestFromList, latestFromEndpoint) ? newestFromList : latestFromEndpoint;
+      liveNewest = isNewerRelease(newestFromList, latestFromEndpoint) ? newestFromList : latestFromEndpoint;
     } else {
-      fetchedNewest = newestFromList || latestFromEndpoint;
+      liveNewest = newestFromList || latestFromEndpoint;
     }
 
-    // If fetched release is newer or equal, persist and return it
-    if (fetchedNewest && (!candidate || isNewerRelease(fetchedNewest, candidate) || fetchedNewest.tag_name === candidate.tag_name)) {
-      candidate = fetchedNewest;
-      storeLatest(fetchedNewest);
+    if (liveNewest) {
+      storeLatest(liveNewest);
+      return liveNewest;
     }
 
-    return candidate;
+    // If live API returned empty (e.g. rate limit), use stored or default
+    const stored = getStoredLatest();
+    return stored || DEFAULT_LATEST_RELEASE;
   } catch (err) {
-    console.debug('GitHub API query failed, utilizing newest verified release:', err);
-    return candidate;
+    console.debug('GitHub API live query failed, utilizing cached/default release:', err);
+    const stored = getStoredLatest();
+    return stored || DEFAULT_LATEST_RELEASE;
   }
 }
 
+/**
+ * Fetches all releases directly from GitHub API.
+ */
 export async function fetchAllReleases(): Promise<GitHubRelease[]> {
-  const cachedAll = getStoredAllReleases();
-  let baseList = cachedAll && cachedAll.length > 0 ? cachedAll : FALLBACK_RELEASES;
-
   try {
     const timestamp = Date.now();
     const response = await fetch(`${GITHUB_API_BASE}/releases?_t=${timestamp}`, {
@@ -155,22 +160,22 @@ export async function fetchAllReleases(): Promise<GitHubRelease[]> {
       }
     });
 
-    if (!response.ok) {
-      return baseList;
+    if (response.ok) {
+      const data: GitHubRelease[] = await response.json();
+      if (data && Array.isArray(data) && data.length > 0) {
+        const sorted = [...data].sort((a, b) => getReleaseTimestamp(b) - getReleaseTimestamp(a));
+        storeAllReleases(sorted);
+        if (sorted[0]) storeLatest(sorted[0]);
+        return sorted;
+      }
     }
 
-    const data: GitHubRelease[] = await response.json();
-    if (data && Array.isArray(data) && data.length > 0) {
-      const sorted = [...data].sort((a, b) => getReleaseTimestamp(b) - getReleaseTimestamp(a));
-      storeAllReleases(sorted);
-      if (sorted[0]) storeLatest(sorted[0]);
-      return sorted;
-    }
-
-    return baseList;
+    const cachedAll = getStoredAllReleases();
+    return cachedAll && cachedAll.length > 0 ? cachedAll : FALLBACK_RELEASES;
   } catch (err) {
     console.warn('GitHub API releases fetch failed, using cached/fallback:', err);
-    return baseList;
+    const cachedAll = getStoredAllReleases();
+    return cachedAll && cachedAll.length > 0 ? cachedAll : FALLBACK_RELEASES;
   }
 }
 

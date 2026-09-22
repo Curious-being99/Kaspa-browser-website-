@@ -6,31 +6,54 @@ export const GITHUB_API_BASE = 'https://api.github.com/repos/Curious-being99/Kas
 
 // Static fallback in case GitHub API rate limit is exceeded - initialized with absolute latest release
 export const DEFAULT_LATEST_RELEASE: GitHubRelease = {
-  id: 393718513,
-  tag_name: 'v1.0.20260922123310',
-  name: 'KaspaBrowser v1.0.20260922123310',
-  published_at: '2026-09-22T12:33:15Z',
-  html_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/tag/v1.0.20260922123310',
+  id: 393744435,
+  tag_name: 'v1.0.20260922130544',
+  name: 'KaspaBrowser v1.0.20260922130544',
+  published_at: '2026-09-22T13:05:49Z',
+  html_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/tag/v1.0.20260922130544',
   prerelease: false,
-  body: `**Full Changelog**: https://github.com/Curious-being99/Kaspa-browser-/compare/v1.0.20260922001736...v1.0.20260922123310\n\nrefactor: improve Cronet configuration and UX\n- Add resilient Cronet provider initialization with fallback logging\n- Integrate download management features into top-level navigation\n- Refactor history item display for cleaner presentation`,
-  tarball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/tarball/v1.0.20260922123310',
-  zipball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/zipball/v1.0.20260922123310',
+  body: `**Full Changelog**: https://github.com/Curious-being99/Kaspa-browser-/compare/v1.0.20260921231702...v1.0.20260922130544\r\nrefactor: improve Cronet configuration and UX\r\n\r\n- Add resilient Cronet provider initialization with fallback\r\n- Include HTTP/3 and QUIC hints for Kaspa endpoints`,
+  tarball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/tarball/v1.0.20260922130544',
+  zipball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/zipball/v1.0.20260922130544',
   assets: [
     {
-      id: 578685194,
+      id: 581420964,
       name: 'KaspaBrowser-release-signed.apk',
       size: 21068947,
-      download_count: 5,
+      download_count: 0,
       content_type: 'application/vnd.android.package-archive',
-      created_at: '2026-09-22T12:33:14Z',
-      browser_download_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/download/v1.0.20260922123310/KaspaBrowser-release-signed.apk',
-      digest: 'sha256:96229c614e43cda4e7397c8b52ca186cdd72974b4ce39441d8024e9c76cbf91e'
+      created_at: '2026-09-22T13:05:47Z',
+      browser_download_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/download/v1.0.20260922130544/KaspaBrowser-release-signed.apk',
+      digest: 'sha256:272700d77ee45ae68c448632b3506424cee0b28dd386451e4185df7786df1562'
     }
   ]
 };
 
 export const FALLBACK_RELEASES: GitHubRelease[] = [
   DEFAULT_LATEST_RELEASE,
+  {
+    id: 393718513,
+    tag_name: 'v1.0.20260922123310',
+    name: 'KaspaBrowser v1.0.20260922123310',
+    published_at: '2026-09-22T12:33:15Z',
+    html_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/tag/v1.0.20260922123310',
+    prerelease: false,
+    body: `**Full Changelog**: https://github.com/Curious-being99/Kaspa-browser-/compare/v1.0.20260922001736...v1.0.20260922123310\n\nrefactor: improve Cronet configuration and UX\n- Add resilient Cronet provider initialization with fallback logging\n- Integrate download management features into top-level navigation\n- Refactor history item display for cleaner presentation`,
+    tarball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/tarball/v1.0.20260922123310',
+    zipball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/zipball/v1.0.20260922123310',
+    assets: [
+      {
+        id: 578685194,
+        name: 'KaspaBrowser-release-signed.apk',
+        size: 21068947,
+        download_count: 5,
+        content_type: 'application/vnd.android.package-archive',
+        created_at: '2026-09-22T12:33:14Z',
+        browser_download_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/download/v1.0.20260922123310/KaspaBrowser-release-signed.apk',
+        digest: 'sha256:96229c614e43cda4e7397c8b52ca186cdd72974b4ce39441d8024e9c76cbf91e'
+      }
+    ]
+  },
   {
     id: 393374530,
     tag_name: 'v1.0.20260922001736',

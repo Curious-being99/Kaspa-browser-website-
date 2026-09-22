@@ -45,20 +45,10 @@ export default function App() {
           fetchRepoMetadata()
         ]);
         if (latest) {
-          setLatestRelease(prev => {
-            if (!prev) return latest;
-            return isNewerRelease(latest, prev) || latest.tag_name === prev.tag_name ? latest : prev;
-          });
+          setLatestRelease(latest);
         }
         if (list && list.length > 0) {
-          setAllReleases(prev => {
-            if (!prev || prev.length === 0) return list;
-            // Ensure we keep the list with the freshest top release
-            if (isNewerRelease(list[0], prev[0]) || list[0].tag_name === prev[0].tag_name) {
-              return list;
-            }
-            return prev;
-          });
+          setAllReleases(list);
         }
         if (meta) setRepoMeta(meta);
       } catch (err) {
@@ -68,10 +58,10 @@ export default function App() {
 
     loadGithubData();
 
-    // Auto-poll GitHub API every 60 seconds to dynamically detect new APK releases
+    // Auto-poll GitHub API every 30 seconds to immediately catch newly published releases
     const interval = setInterval(() => {
       loadGithubData();
-    }, 60000);
+    }, 30000);
 
     return () => clearInterval(interval);
   }, []);
