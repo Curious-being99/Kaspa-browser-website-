@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Globe, 
-  Wallet, 
+  Cpu, 
   Radio, 
   ShieldCheck, 
   KeyRound, 
@@ -9,7 +9,6 @@ import {
   CheckCircle2, 
   Code2, 
   ArrowUpRight,
-  Cpu,
   Layers,
   Sparkles
 } from 'lucide-react';
@@ -26,7 +25,7 @@ export const FeaturesGrid: React.FC = () => {
   const getIcon = (name: string) => {
     switch (name) {
       case 'Globe': return <Globe className="w-6 h-6 text-[#70C7BA]" />;
-      case 'Wallet': return <Wallet className="w-6 h-6 text-[#70C7BA]" />;
+      case 'Cpu': return <Cpu className="w-6 h-6 text-[#70C7BA]" />;
       case 'Radar': return <Radio className="w-6 h-6 text-[#70C7BA]" />;
       case 'ShieldCheck': return <ShieldCheck className="w-6 h-6 text-[#70C7BA]" />;
       case 'KeyRound': return <KeyRound className="w-6 h-6 text-[#70C7BA]" />;

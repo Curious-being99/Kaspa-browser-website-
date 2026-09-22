@@ -14,6 +14,7 @@ export interface GitHubRelease {
   tag_name: string;
   name: string;
   published_at: string;
+  created_at?: string;
   body: string;
   html_url: string;
   prerelease: boolean;

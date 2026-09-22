@@ -29,21 +29,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   onQrClick,
   isDownloading
 }) => {
-  const [activePreviewTab, setActivePreviewTab] = useState<'gateway' | 'privacy' | 'roadmap'>('gateway');
+  const [activePreviewTab, setActivePreviewTab] = useState<'gateway' | 'privacy' | 'web3'>('gateway');
   const [isUserInteracting, setIsUserInteracting] = useState(false);
   const [copiedHash, setCopiedHash] = useState(false);
 
   const preferredAsset = latestRelease ? getPreferredDownloadAsset(latestRelease) : null;
   const shaDigest = preferredAsset?.digest || 'sha256:0b535ecc3edf685c4c0349b31e909a9fc49dffcf2a83de10b49b2e9640053681';
 
-  // Auto-navigate between Gateway -> Privacy -> Roadmap every 4 seconds unless user manually interacts
+  // Auto-navigate between Gateway -> Privacy -> Web3 every 4 seconds unless user manually interacts
   useEffect(() => {
     if (isUserInteracting) return;
 
     const interval = setInterval(() => {
       setActivePreviewTab((prevTab) => {
         if (prevTab === 'gateway') return 'privacy';
-        if (prevTab === 'privacy') return 'roadmap';
+        if (prevTab === 'privacy') return 'web3';
         return 'gateway';
       });
     }, 4000);
@@ -51,7 +51,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     return () => clearInterval(interval);
   }, [isUserInteracting]);
 
-  const handleTabClick = (tab: 'gateway' | 'privacy' | 'roadmap') => {
+  const handleTabClick = (tab: 'gateway' | 'privacy' | 'web3') => {
     setIsUserInteracting(true);
     setActivePreviewTab(tab);
   };
@@ -76,7 +76,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             {/* Main Headline */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#14161C] border border-[#70C7BA]/40 text-xs font-mono text-[#70C7BA]">
               <span className="w-2 h-2 rounded-full bg-[#70C7BA] animate-pulse" />
-              <span>Package: org.kaspa.browser</span>
+              <span>Decentralized Android Client</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#F3F4F6] leading-[1.1]">
@@ -88,7 +88,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
             {/* Subtitle */}
             <p className="text-base sm:text-lg text-gray-400 max-w-2xl leading-relaxed">
-              Kaspa Browser is a privacy-first, decentralized Android web browser and Web3 gateway designed to seamlessly bridge standard web browsing with peer-to-peer decentralized technologies and the Kaspa network ecosystem. Built with <strong className="text-gray-200">Kotlin</strong> and <strong className="text-gray-200">Jetpack Compose (Material 3)</strong>, it unifies standard web browsing, decentralized peer-to-peer mesh discovery, cryptographic identity management, on-device local node hosting, and native Kaspa BlockDAG (KAS) wallet utilities into a fast, privacy-first mobile client.
+              Kaspa Browser is a privacy-first, decentralized Android web browser and Web3 gateway designed to seamlessly bridge standard web browsing with peer-to-peer decentralized technologies and the Kaspa network ecosystem. Built with <strong className="text-gray-200">Kotlin</strong> and <strong className="text-gray-200">Jetpack Compose (Material 3)</strong>, it unifies standard web browsing, decentralized peer-to-peer mesh discovery, cryptographic identity management, on-device local node hosting, and high-performance Web3 browsing into a fast, privacy-first mobile client.
             </p>
 
             {/* Main Action Buttons */}
@@ -181,21 +181,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <span className="relative z-10">Privacy Shield</span>
                 </button>
                 <button
-                  onClick={() => handleTabClick('roadmap')}
+                  onClick={() => handleTabClick('web3')}
                   className={`relative py-2 px-3 rounded-md text-xs font-mono font-medium transition-all cursor-pointer ${
-                    activePreviewTab === 'roadmap' 
+                    activePreviewTab === 'web3' 
                       ? 'text-[#70C7BA] font-bold' 
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
-                  {activePreviewTab === 'roadmap' && (
+                  {activePreviewTab === 'web3' && (
                     <motion.div 
                       layoutId="tab-pill" 
                       className="absolute inset-0 bg-[#14161C] rounded-md border border-[#282C37]"
                       transition={{ type: "spring", stiffness: 400, damping: 30 }}
                     />
                   )}
-                  <span className="relative z-10">Roadmap</span>
+                  <span className="relative z-10">Web3 Gateway</span>
                 </button>
               </div>
 
@@ -297,10 +297,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                       </motion.div>
                     )}
 
-                    {/* 3. ROADMAP / STATUS SCREEN */}
-                    {activePreviewTab === 'roadmap' && (
+                    {/* 3. WEB3 GATEWAY SCREEN */}
+                    {activePreviewTab === 'web3' && (
                       <motion.div 
-                        key="roadmap"
+                        key="web3"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -309,21 +309,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                       >
                         <div className="p-3.5 rounded-xl bg-[#14161C] border border-[#282C37] space-y-2">
                           <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold text-white">Kaspa (KAS) Token Integration</span>
-                            <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-[#14161C] text-amber-400 border border-[#282C37]">
-                              IN DEVELOPMENT
+                            <span className="text-xs font-bold text-white">High-Performance Web3 Gateway</span>
+                            <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-[#14161C] text-[#70C7BA] border border-[#282C37]">
+                              ACTIVE
                             </span>
                           </div>
                           <p className="text-[11px] text-gray-300 leading-relaxed">
-                            As noted in GitHub release updates, native on-device KAS wallet features and dApp transaction signing are currently in active development.
+                            Bridges standard web browsing with peer-to-peer mesh discovery, cryptographic identity management, and Kaspa BlockDAG network protocols.
                           </p>
                         </div>
 
                         <div className="p-3.5 rounded-xl bg-[#14161C] border border-[#282C37] space-y-2">
-                          <div className="text-xs font-semibold text-white">Current Production Highlights</div>
+                          <div className="text-xs font-semibold text-white">Architecture Highlights</div>
                           <ul className="text-[11px] text-gray-300 space-y-1 font-mono">
-                            <li>• Security &amp; bug fix patches</li>
-                            <li>• HTTP/3 QUIC connection pooling</li>
+                            <li>• High-performance Web3 browsing</li>
+                            <li>• HTTP/3 QUIC 0-RTT acceleration</li>
                             <li>• Jetpack Compose Material 3 UI</li>
                             <li>• Android 8.0 - Android 16 support</li>
                           </ul>
