@@ -21,7 +21,8 @@ import {
   fetchAllReleases, 
   fetchRepoMetadata,
   triggerBrowserDownload,
-  getPreferredDownloadAsset
+  getPreferredDownloadAsset,
+  isNewerRelease
 } from './services/githubService';
 import { DEFAULT_LATEST_RELEASE, FALLBACK_RELEASES, FALLBACK_REPO_META } from './data/kaspaData';
 
@@ -44,9 +45,21 @@ export default function App() {
           fetchRepoMetadata()
         ]);
         if (latest) {
-          setLatestRelease(latest);
+          setLatestRelease(prev => {
+            if (!prev) return latest;
+            return isNewerRelease(latest, prev) || latest.tag_name === prev.tag_name ? latest : prev;
+          });
         }
-        if (list && list.length > 0) setAllReleases(list);
+        if (list && list.length > 0) {
+          setAllReleases(prev => {
+            if (!prev || prev.length === 0) return list;
+            // Ensure we keep the list with the freshest top release
+            if (isNewerRelease(list[0], prev[0]) || list[0].tag_name === prev[0].tag_name) {
+              return list;
+            }
+            return prev;
+          });
+        }
         if (meta) setRepoMeta(meta);
       } catch (err) {
         console.warn('Could not refresh from GitHub API, using fallback data:', err);

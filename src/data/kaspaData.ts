@@ -6,25 +6,25 @@ export const GITHUB_API_BASE = 'https://api.github.com/repos/Curious-being99/Kas
 
 // Static fallback in case GitHub API rate limit is exceeded - initialized with absolute latest release
 export const DEFAULT_LATEST_RELEASE: GitHubRelease = {
-  id: 392297373,
-  tag_name: 'v1.0.20260920031739',
-  name: 'KaspaBrowser v1.0.20260920031739',
-  published_at: '2026-09-20T03:17:44Z',
-  html_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/tag/v1.0.20260920031739',
+  id: 393718513,
+  tag_name: 'v1.0.20260922123310',
+  name: 'KaspaBrowser v1.0.20260922123310',
+  published_at: '2026-09-22T12:33:15Z',
+  html_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/tag/v1.0.20260922123310',
   prerelease: false,
-  body: `**Full Changelog**: https://github.com/Curious-being99/Kaspa-browser-/compare/v1.0.20260919171517...v1.0.20260920031739\n\nbuild: remove unused Google Services and Firebase code\nClean up the build configuration by removing the Google Services plugin and unused dependency declarations.`,
-  tarball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/tarball/v1.0.20260920031739',
-  zipball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/zipball/v1.0.20260920031739',
+  body: `**Full Changelog**: https://github.com/Curious-being99/Kaspa-browser-/compare/v1.0.20260922001736...v1.0.20260922123310\n\nrefactor: improve Cronet configuration and UX\n- Add resilient Cronet provider initialization with fallback logging\n- Integrate download management features into top-level navigation\n- Refactor history item display for cleaner presentation`,
+  tarball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/tarball/v1.0.20260922123310',
+  zipball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/zipball/v1.0.20260922123310',
   assets: [
     {
-      id: 576006705,
+      id: 578685194,
       name: 'KaspaBrowser-release-signed.apk',
-      size: 21183635,
-      download_count: 12,
+      size: 21068947,
+      download_count: 5,
       content_type: 'application/vnd.android.package-archive',
-      created_at: '2026-09-20T03:17:42Z',
-      browser_download_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/download/v1.0.20260920031739/KaspaBrowser-release-signed.apk',
-      digest: 'sha256:1a4e719c039e5d7a4d86e959810c67d4b39ebc02251ffc7c7c6b54019bcbb302'
+      created_at: '2026-09-22T12:33:14Z',
+      browser_download_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/download/v1.0.20260922123310/KaspaBrowser-release-signed.apk',
+      digest: 'sha256:96229c614e43cda4e7397c8b52ca186cdd72974b4ce39441d8024e9c76cbf91e'
     }
   ]
 };
@@ -32,25 +32,71 @@ export const DEFAULT_LATEST_RELEASE: GitHubRelease = {
 export const FALLBACK_RELEASES: GitHubRelease[] = [
   DEFAULT_LATEST_RELEASE,
   {
-    id: 391695427,
-    tag_name: 'v1.0.20260918183336',
-    name: 'KaspaBrowser v1.0.20260918183336',
-    published_at: '2026-09-18T18:33:41Z',
-    html_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/tag/v1.0.20260918183336',
+    id: 393374530,
+    tag_name: 'v1.0.20260922001736',
+    name: 'KaspaBrowser v1.0.20260922001736',
+    published_at: '2026-09-22T00:17:41Z',
+    html_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/tag/v1.0.20260922001736',
     prerelease: false,
-    body: `**Full Changelog**: https://github.com/Curious-being99/Kaspa-browser-/compare/v1.0.20260918122337...v1.0.20260918183336\n\nfix: improve reader mode stability and add theme persistence\n- Encode JS extraction output to prevent parsing failures in Android.\n- Implement SharedPreference persistence for browser theme settings.\n- Add Palette icon for theme customization UI.`,
-    tarball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/tarball/v1.0.20260918183336',
-    zipball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/zipball/v1.0.20260918183336',
+    body: `**Full Changelog**: https://github.com/Curious-being99/Kaspa-browser-/compare/v1.0.20260921231702...v1.0.20260922001736\n\nrefactor: simplify network and address logic\n- Simplify Cronet engine initialization and network interceptor logic\n- Enhance address bar URL parsing and validation`,
+    tarball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/tarball/v1.0.20260922001736',
+    zipball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/zipball/v1.0.20260922001736',
     assets: [
       {
-        id: 573209817,
+        id: 578291042,
         name: 'KaspaBrowser-release-signed.apk',
-        size: 23934207,
-        download_count: 4,
+        size: 21200019,
+        download_count: 8,
         content_type: 'application/vnd.android.package-archive',
-        created_at: '2026-09-18T18:33:40Z',
-        browser_download_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/download/v1.0.20260918183336/KaspaBrowser-release-signed.apk',
-        digest: 'sha256:444c6368931c6d303f991ecc8194b9e0753c0d4010691bc7328486b364ad980f'
+        created_at: '2026-09-22T00:17:40Z',
+        browser_download_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/download/v1.0.20260922001736/KaspaBrowser-release-signed.apk',
+        digest: 'sha256:0dad3c2f3333479154271eeae2444e832910689a50cab3bf8ce3b9366c384421'
+      }
+    ]
+  },
+  {
+    id: 392710272,
+    tag_name: 'v1.0.20260921051514',
+    name: 'KaspaBrowser v1.0.20260921051514',
+    published_at: '2026-09-21T05:15:19Z',
+    html_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/tag/v1.0.20260921051514',
+    prerelease: false,
+    body: `**Full Changelog**: https://github.com/Curious-being99/Kaspa-browser-/compare/v1.0.20260921043834...v1.0.20260921051514\n\nfeat: implement pull-to-refresh for browser UI\n- Add vertical drag gesture for page reload\n- Enhance network connectivity handling`,
+    tarball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/tarball/v1.0.20260921051514',
+    zipball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/zipball/v1.0.20260921051514',
+    assets: [
+      {
+        id: 576829104,
+        name: 'KaspaBrowser-release-signed.apk',
+        size: 21183635,
+        download_count: 9,
+        content_type: 'application/vnd.android.package-archive',
+        created_at: '2026-09-21T05:15:18Z',
+        browser_download_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/download/v1.0.20260921051514/KaspaBrowser-release-signed.apk',
+        digest: 'sha256:29042be8d2cfb127d6e4116b48574131f5a85019c11514a8f2d87bd453a64f2e'
+      }
+    ]
+  },
+  {
+    id: 392297373,
+    tag_name: 'v1.0.20260920031739',
+    name: 'KaspaBrowser v1.0.20260920031739',
+    published_at: '2026-09-20T03:17:44Z',
+    html_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/tag/v1.0.20260920031739',
+    prerelease: false,
+    body: `**Full Changelog**: https://github.com/Curious-being99/Kaspa-browser-/compare/v1.0.20260919171517...v1.0.20260920031739\n\nbuild: remove unused Google Services and Firebase code\nClean up the build configuration by removing the Google Services plugin and unused dependency declarations.`,
+    tarball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/tarball/v1.0.20260920031739',
+    zipball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/zipball/v1.0.20260920031739',
+    assets: [
+      {
+        id: 576006705,
+        name: 'KaspaBrowser-release-signed.apk',
+        size: 21183635,
+        download_count: 12,
+        content_type: 'application/vnd.android.package-archive',
+        created_at: '2026-09-20T03:17:42Z',
+        browser_download_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/download/v1.0.20260920031739/KaspaBrowser-release-signed.apk',
+        digest: 'sha256:1a4e719c039e5d7a4d86e959810c67d4b39ebc02251ffc7c7c6b54019bcbb302'
       }
     ]
   }
