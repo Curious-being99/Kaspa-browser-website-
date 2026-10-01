@@ -29,10 +29,27 @@ export const ReleasesViewer: React.FC<ReleasesViewerProps> = ({
   const preferredAsset = getPreferredDownloadAsset(release);
   const shaDigest = preferredAsset?.digest || 'sha256:0b535ecc3edf685c4c0349b31e909a9fc49dffcf2a83de10b49b2e9640053681';
 
-  const copyHash = (hash: string) => {
-    navigator.clipboard.writeText(hash);
-    setCopiedHash(hash);
-    setTimeout(() => setCopiedHash(null), 2000);
+  const copyHash = async (hash: string) => {
+    try {
+      await navigator.clipboard.writeText(hash);
+      setCopiedHash(hash);
+      setTimeout(() => setCopiedHash(null), 2000);
+    } catch {
+      const textArea = document.createElement('textarea');
+      textArea.value = hash;
+      textArea.style.position = 'fixed';
+      textArea.style.opacity = '0';
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        setCopiedHash(hash);
+        setTimeout(() => setCopiedHash(null), 2000);
+      } catch {
+        // ignore
+      }
+      document.body.removeChild(textArea);
+    }
   };
 
   const renderChangelogContent = (content: string) => {
@@ -135,11 +152,18 @@ export const ReleasesViewer: React.FC<ReleasesViewerProps> = ({
                 <div className="text-xs text-gray-400 font-mono mt-0.5 flex items-center gap-2">
                   <Calendar className="w-3 h-3 text-gray-500" />
                   <span>
-                    {new Date(release.published_at).toLocaleDateString(undefined, {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric'
-                    })}
+                    {(() => {
+                      const rawDate = release.published_at || release.created_at;
+                      if (!rawDate) return 'Latest Release';
+                      const parsed = new Date(rawDate);
+                      return isNaN(parsed.getTime()) 
+                        ? 'Recently Published' 
+                        : parsed.toLocaleDateString(undefined, {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                          });
+                    })()}
                   </span>
                   <span>•</span>
                   <span>Android 8.0 - 16</span>

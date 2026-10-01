@@ -53,16 +53,16 @@ export const FeaturesGrid: React.FC = () => {
 
           {/* Filter Pills */}
           <div className="flex flex-wrap justify-center gap-2 pt-2">
-            {[
+            {([
               { id: 'all', label: 'All Capabilities' },
               { id: 'core', label: 'Hybrid Engine' },
               { id: 'blockchain', label: 'Kaspa BlockDAG' },
               { id: 'network', label: 'P2P Mesh & QUIC' },
               { id: 'privacy', label: 'Privacy & Security' }
-            ].map(tab => (
+            ] as const).map(tab => (
               <button
                 key={tab.id}
-                onClick={() => setActiveCategory(tab.id as any)}
+                onClick={() => setActiveCategory(tab.id)}
                 className={`px-3.5 py-1.5 rounded-full text-xs font-mono transition-all cursor-pointer ${
                   activeCategory === tab.id
                     ? 'bg-[#70C7BA] text-[#0C0D10] font-bold'

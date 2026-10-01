@@ -21,8 +21,7 @@ import {
   fetchAllReleases, 
   fetchRepoMetadata,
   triggerBrowserDownload,
-  getPreferredDownloadAsset,
-  isNewerRelease
+  getPreferredDownloadAsset
 } from './services/githubService';
 import { DEFAULT_LATEST_RELEASE, FALLBACK_RELEASES, FALLBACK_REPO_META } from './data/kaspaData';
 
@@ -37,6 +36,8 @@ export default function App() {
 
   // Load live release & repo data from GitHub API with live auto-refresh
   useEffect(() => {
+    let isMounted = true;
+
     async function loadGithubData() {
       try {
         const [latest, list, meta] = await Promise.all([
@@ -44,6 +45,7 @@ export default function App() {
           fetchAllReleases(),
           fetchRepoMetadata()
         ]);
+        if (!isMounted) return;
         if (latest) {
           setLatestRelease(latest);
         }
@@ -63,7 +65,10 @@ export default function App() {
       loadGithubData();
     }, 30000);
 
-    return () => clearInterval(interval);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, []);
 
   const handleTriggerDownload = (release?: GitHubRelease) => {

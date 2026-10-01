@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, QrCode, Smartphone, Copy, Check, ExternalLink } from 'lucide-react';
+import { KaspaLogo } from './KaspaLogo';
 import { GitHubRelease } from '../types';
 import { getPreferredDownloadAsset } from '../services/githubService';
+import { DEFAULT_LATEST_RELEASE } from '../data/kaspaData';
 
 interface QrCodeModalProps {
   isOpen: boolean;
@@ -16,28 +18,58 @@ export const QrCodeModal: React.FC<QrCodeModalProps> = ({
 }) => {
   const [copied, setCopied] = useState(false);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const preferredAsset = latestRelease ? getPreferredDownloadAsset(latestRelease) : null;
+  const targetTag = latestRelease?.tag_name || DEFAULT_LATEST_RELEASE.tag_name;
   const downloadUrl = preferredAsset?.browser_download_url || 
-    (latestRelease?.tag_name 
-      ? `https://github.com/Curious-being99/Kaspa-browser-/releases/download/${latestRelease.tag_name}/KaspaBrowser-release-signed.apk`
-      : `https://github.com/Curious-being99/Kaspa-browser-/releases/download/v1.0.20260920031739/KaspaBrowser-release-signed.apk`);
+    `https://github.com/Curious-being99/Kaspa-browser-/releases/download/${targetTag}/KaspaBrowser-release-signed.apk`;
 
   // Encode QR URL using google chart API or high reliability QR proxy
   const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(downloadUrl)}&bgcolor=14-16-28&color=112-199-186&margin=10`;
 
-  const copyUrl = () => {
-    navigator.clipboard.writeText(downloadUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const copyUrl = async () => {
+    try {
+      await navigator.clipboard.writeText(downloadUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      const textArea = document.createElement('textarea');
+      textArea.value = downloadUrl;
+      textArea.style.position = 'fixed';
+      textArea.style.opacity = '0';
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch {
+        // ignore
+      }
+      document.body.removeChild(textArea);
+    }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn cursor-pointer"
+      onClick={onClose}
+    >
       <div 
         id="qr-modal-card"
-        className="relative w-full max-w-md rounded-2xl bg-[#14161C] border border-[#70C7BA]/50 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.9),0_0_40px_rgba(112,199,186,0.2)] text-center"
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-md rounded-2xl bg-[#14161C] border border-[#70C7BA]/50 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.9),0_0_40px_rgba(112,199,186,0.2)] text-center cursor-default"
       >
         {/* Close Button */}
         <button
@@ -50,8 +82,8 @@ export const QrCodeModal: React.FC<QrCodeModalProps> = ({
         </button>
 
         {/* Modal Header */}
-        <div className="inline-flex p-3 rounded-2xl bg-[#70C7BA]/10 border border-[#70C7BA]/30 text-[#70C7BA] mb-3">
-          <Smartphone className="w-6 h-6" />
+        <div className="inline-flex p-2 rounded-2xl bg-[#70C7BA]/10 border border-[#70C7BA]/30 mb-3">
+          <KaspaLogo className="w-8 h-8 rounded-full shadow-sm" />
         </div>
         <h2 className="text-xl font-bold text-white tracking-tight">
           Scan to Install on Android

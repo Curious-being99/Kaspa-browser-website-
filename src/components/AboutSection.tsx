@@ -1,4 +1,5 @@
 import React from 'react';
+import { KaspaLogo } from './KaspaLogo';
 import { 
   Info, 
   ShieldCheck, 
@@ -49,7 +50,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
           <div className="lg:col-span-6 space-y-6">
             <div className="p-6 rounded-2xl bg-[#14161C] border border-[#282C37] space-y-4">
               <h3 className="text-xl font-bold text-white flex items-center gap-2.5">
-                <Globe2 className="w-5 h-5 text-[#70C7BA]" />
+                <KaspaLogo className="w-5 h-5 rounded-full shadow-sm" />
                 <span>What is KaspaBrowser?</span>
               </h3>
               <p className="text-sm text-gray-300 leading-relaxed">

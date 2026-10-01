@@ -6,31 +6,55 @@ export const GITHUB_API_BASE = 'https://api.github.com/repos/Curious-being99/Kas
 
 // Static fallback in case GitHub API rate limit is exceeded - initialized with absolute latest release
 export const DEFAULT_LATEST_RELEASE: GitHubRelease = {
-  id: 393744435,
-  tag_name: 'v1.0.20260922130544',
-  name: 'KaspaBrowser v1.0.20260922130544',
-  published_at: '2026-09-22T13:05:49Z',
-  html_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/tag/v1.0.20260922130544',
+  id: 400837233,
+  tag_name: 'v1.0.20261001095737',
+  name: 'KaspaBrowser v1.0.20261001095737',
+  published_at: '2026-10-01T09:57:43Z',
+  created_at: '2026-10-01T09:52:02Z',
+  html_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/tag/v1.0.20261001095737',
   prerelease: false,
-  body: `**Full Changelog**: https://github.com/Curious-being99/Kaspa-browser-/compare/v1.0.20260921231702...v1.0.20260922130544\r\nrefactor: improve Cronet configuration and UX\r\n\r\n- Add resilient Cronet provider initialization with fallback\r\n- Include HTTP/3 and QUIC hints for Kaspa endpoints`,
-  tarball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/tarball/v1.0.20260922130544',
-  zipball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/zipball/v1.0.20260922130544',
+  body: `**Full Changelog**: https://github.com/Curious-being99/Kaspa-browser-/compare/v1.0.20260930150702...v1.0.20261001095737\r\nWhat's 🆕 \r\nfeat: add file download handler and refine linting\r\n- Introduced DIRECT_DOWNLOAD_EXTENSIONS and isDownloadableExtension to support file downloads.\r\n- Relaxed Lint configuration to ignore specific non-critical warnings and cleanup unused color resources.\r\n- Removed deprecated native intent routing logic.\r\n- Simplified WebView error handling and service worker initialization.`,
+  tarball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/tarball/v1.0.20261001095737',
+  zipball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/zipball/v1.0.20261001095737',
   assets: [
     {
-      id: 581420964,
+      id: 592819284,
       name: 'KaspaBrowser-release-signed.apk',
-      size: 21068947,
+      size: 24870773,
       download_count: 0,
       content_type: 'application/vnd.android.package-archive',
-      created_at: '2026-09-22T13:05:47Z',
-      browser_download_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/download/v1.0.20260922130544/KaspaBrowser-release-signed.apk',
-      digest: 'sha256:272700d77ee45ae68c448632b3506424cee0b28dd386451e4185df7786df1562'
+      created_at: '2026-10-01T09:57:40Z',
+      browser_download_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/download/v1.0.20261001095737/KaspaBrowser-release-signed.apk',
+      digest: 'sha256:7b55db5a7bcda110fa956e187bfb156b82531da0b043c7b966b96e94e5e79685'
     }
   ]
 };
 
 export const FALLBACK_RELEASES: GitHubRelease[] = [
   DEFAULT_LATEST_RELEASE,
+  {
+    id: 393744435,
+    tag_name: 'v1.0.20260922130544',
+    name: 'KaspaBrowser v1.0.20260922130544',
+    published_at: '2026-09-22T13:05:49Z',
+    html_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/tag/v1.0.20260922130544',
+    prerelease: false,
+    body: `**Full Changelog**: https://github.com/Curious-being99/Kaspa-browser-/compare/v1.0.20260921231702...v1.0.20260922130544\r\nrefactor: improve Cronet configuration and UX\r\n\r\n- Add resilient Cronet provider initialization with fallback\r\n- Include HTTP/3 and QUIC hints for Kaspa endpoints`,
+    tarball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/tarball/v1.0.20260922130544',
+    zipball_url: 'https://api.github.com/repos/Curious-being99/Kaspa-browser-/zipball/v1.0.20260922130544',
+    assets: [
+      {
+        id: 581420964,
+        name: 'KaspaBrowser-release-signed.apk',
+        size: 21068947,
+        download_count: 0,
+        content_type: 'application/vnd.android.package-archive',
+        created_at: '2026-09-22T13:05:47Z',
+        browser_download_url: 'https://github.com/Curious-being99/Kaspa-browser-/releases/download/v1.0.20260922130544/KaspaBrowser-release-signed.apk',
+        digest: 'sha256:272700d77ee45ae68c448632b3506424cee0b28dd386451e4185df7786df1562'
+      }
+    ]
+  },
   {
     id: 393718513,
     tag_name: 'v1.0.20260922123310',

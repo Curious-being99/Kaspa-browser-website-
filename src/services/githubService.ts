@@ -6,8 +6,8 @@ import {
   GITHUB_API_BASE 
 } from '../data/kaspaData';
 
-const LATEST_CACHE_KEY = 'kaspa_latest_release_v3';
-const ALL_RELEASES_CACHE_KEY = 'kaspa_all_releases_v3';
+const LATEST_CACHE_KEY = 'kaspa_latest_release_v4';
+const ALL_RELEASES_CACHE_KEY = 'kaspa_all_releases_v4';
 
 /**
  * Extracts a normalized Unix epoch millisecond timestamp from a release.
@@ -137,12 +137,18 @@ export async function fetchLatestRelease(): Promise<GitHubRelease> {
       return liveNewest;
     }
 
-    // If live API returned empty (e.g. rate limit), use stored or default
+    // If live API returned empty (e.g. rate limit), use freshest between stored and DEFAULT_LATEST_RELEASE
     const stored = getStoredLatest();
+    if (stored && DEFAULT_LATEST_RELEASE && isNewerRelease(DEFAULT_LATEST_RELEASE, stored)) {
+      return DEFAULT_LATEST_RELEASE;
+    }
     return stored || DEFAULT_LATEST_RELEASE;
   } catch (err) {
     console.debug('GitHub API live query failed, utilizing cached/default release:', err);
     const stored = getStoredLatest();
+    if (stored && DEFAULT_LATEST_RELEASE && isNewerRelease(DEFAULT_LATEST_RELEASE, stored)) {
+      return DEFAULT_LATEST_RELEASE;
+    }
     return stored || DEFAULT_LATEST_RELEASE;
   }
 }
@@ -171,11 +177,23 @@ export async function fetchAllReleases(): Promise<GitHubRelease[]> {
     }
 
     const cachedAll = getStoredAllReleases();
-    return cachedAll && cachedAll.length > 0 ? cachedAll : FALLBACK_RELEASES;
+    if (cachedAll && cachedAll.length > 0) {
+      if (DEFAULT_LATEST_RELEASE && isNewerRelease(DEFAULT_LATEST_RELEASE, cachedAll[0])) {
+        return [DEFAULT_LATEST_RELEASE, ...cachedAll];
+      }
+      return cachedAll;
+    }
+    return FALLBACK_RELEASES;
   } catch (err) {
     console.warn('GitHub API releases fetch failed, using cached/fallback:', err);
     const cachedAll = getStoredAllReleases();
-    return cachedAll && cachedAll.length > 0 ? cachedAll : FALLBACK_RELEASES;
+    if (cachedAll && cachedAll.length > 0) {
+      if (DEFAULT_LATEST_RELEASE && isNewerRelease(DEFAULT_LATEST_RELEASE, cachedAll[0])) {
+        return [DEFAULT_LATEST_RELEASE, ...cachedAll];
+      }
+      return cachedAll;
+    }
+    return FALLBACK_RELEASES;
   }
 }
 
@@ -210,7 +228,7 @@ export function formatBytes(bytes: number, decimals = 1): string {
 
 export function getPreferredDownloadAsset(release: GitHubRelease) {
   const defaultAsset = DEFAULT_LATEST_RELEASE.assets?.[0];
-  const defaultSha = defaultAsset?.digest?.replace('sha256:', '') || '96229c614e43cda4e7397c8b52ca186cdd72974b4ce39441d8024e9c76cbf91e';
+  const defaultSha = defaultAsset?.digest?.replace('sha256:', '') || '7b55db5a7bcda110fa956e187bfb156b82531da0b043c7b966b96e94e5e79685';
 
   // Extract potential sha256 from release body if present
   let extractedSha = defaultSha;
