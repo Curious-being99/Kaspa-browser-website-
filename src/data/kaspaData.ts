@@ -2,7 +2,7 @@ import { GitHubRelease, GitHubRepoMeta, FeatureItem } from '../types';
 
 export const GITHUB_REPO_URL = 'https://github.com/Curious-being99/Kaspa-browser-';
 export const GITHUB_RELEASES_URL = 'https://github.com/Curious-being99/Kaspa-browser-/releases';
-export const GITHUB_API_BASE = 'https://api.github.com/repos/Curious-being99/Kaspa-browser-';
+export const GITHUB_API_BASE = '/api/github/repos/Curious-being99/Kaspa-browser-';
 
 // Static fallback in case GitHub API rate limit is exceeded - initialized with absolute latest release
 export const DEFAULT_LATEST_RELEASE: GitHubRelease = {

@@ -17,17 +17,31 @@ export interface LiveFeedItem {
   url?: string;
 }
 
-const GITHUB_REPO_API = 'https://api.github.com/repos/Curious-being99/Kaspa-browser-';
+const GITHUB_REPO_API = '/api/github/repos/Curious-being99/Kaspa-browser-';
 
 export async function fetchLiveGitHubCommits(): Promise<LiveFeedItem[]> {
+  const CACHE_KEY = 'github_commits_cache';
+  const CACHE_TIME = 3600000; // 1 hour
+
   try {
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+      const { data, timestamp } = JSON.parse(cached);
+      if (Date.now() - timestamp < CACHE_TIME) {
+        return data;
+      }
+    }
+
     const res = await fetch(`${GITHUB_REPO_API}/commits?per_page=5`, {
       headers: { 'Accept': 'application/vnd.github.v3+json' }
     });
-    if (!res.ok) throw new Error('GitHub commits fetch failed');
+    if (!res.ok) {
+      console.error(`GitHub API error: ${res.status} - ${await res.text()}`);
+      throw new Error(`GitHub commits fetch failed: ${res.status}`);
+    }
     const commits = await res.json();
     
-    return commits.map((c: any, index: number) => {
+    const data = commits.map((c: any, index: number) => {
       const date = new Date(c.commit.committer.date);
       const hoursAgo = Math.max(1, Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60)));
       const timeAgo = hoursAgo > 24 ? `${Math.floor(hoursAgo / 24)}d ago` : `${hoursAgo}h ago`;
@@ -42,6 +56,9 @@ export async function fetchLiveGitHubCommits(): Promise<LiveFeedItem[]> {
         url: c.html_url
       };
     });
+
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
+    return data;
   } catch (err) {
     console.warn('Live GitHub commits fetch error:', err);
     return [];

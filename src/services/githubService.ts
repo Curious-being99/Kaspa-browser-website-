@@ -199,7 +199,8 @@ export async function fetchAllReleases(): Promise<GitHubRelease[]> {
 
 export async function fetchRepoMetadata(): Promise<GitHubRepoMeta> {
   try {
-    const response = await fetch(GITHUB_API_BASE, {
+    const timestamp = Date.now();
+    const response = await fetch(`${GITHUB_API_BASE}?_t=${timestamp}`, {
       headers: {
         'Accept': 'application/vnd.github.v3+json'
       }

@@ -64,10 +64,9 @@ export default function App() {
 
     loadData();
 
-    // Auto-poll API every 10 seconds to immediately catch newly published releases and price updates
-    const interval = setInterval(() => {
-      loadData();
-    }, 10000);
+    // Polling disabled to avoid rate limiting
+    const interval = null;
+
 
     return () => {
       isMounted = false;
