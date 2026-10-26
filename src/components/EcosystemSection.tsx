@@ -35,22 +35,9 @@ export const EcosystemSection: React.FC = () => {
             </div>
             
             <p className="text-gray-400 mb-8 leading-relaxed">
-              The $KB token is the native utility asset powering the KaspaBrowser ecosystem. It enables premium features, governance participation, and fuels decentralized transactions within the browser.
+              The $KB token is the native utility asset for KaspaBrowser.
             </p>
 
-            <ul className="space-y-4 mb-8">
-              {[
-                'Access premium Web3 gateways',
-                'Priority mesh network routing',
-                'Ecosystem governance rights',
-                'Staking for browser rewards'
-              ].map((item, i) => (
-                <li key={i} className="flex items-center gap-3 text-sm text-gray-300">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#70C7BA]" />
-                  {item}
-                </li>
-              ))}
-            </ul>
 
             <a 
               href="https://kasparocket.fun/token/b75a6e90f569965bdeec23c460ebd59e0f0445d8aa8f5d4330fe15c66a47b4d8"
