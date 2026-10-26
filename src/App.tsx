@@ -39,15 +39,18 @@ export default function App() {
 
     async function loadGitHubData() {
       try {
-        const [latest, meta] = await Promise.all([
-          fetchLatestRelease(),
-          fetchRepoMetadata()
-        ]);
+        // Use sequential loads with slight delay or Promise.all if we are sure about limits
+        // but here we just want to ensure we get the latest release first
+        const latest = await fetchLatestRelease();
         if (!isMounted) return;
         if (latest) setLatestRelease(latest);
-        if (meta) setRepoMeta(meta);
+
+        // Fetch meta and commits only if we haven't hit rate limits yet
+        // or just fetch them all at once once per cycle
+        const meta = await fetchRepoMetadata();
+        if (isMounted && meta) setRepoMeta(meta);
       } catch (err) {
-        console.warn('GitHub data refresh failed (likely rate limit):', err);
+        console.warn('GitHub data refresh failed:', err);
       }
     }
 

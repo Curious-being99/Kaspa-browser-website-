@@ -17,7 +17,7 @@ export interface LiveFeedItem {
   url?: string;
 }
 
-const GITHUB_REPO_API = 'https://api.github.com/repos/Curious-being99/Kaspa-browser-';
+const GITHUB_REPO_API = '/api/github';
 
 export async function fetchLiveGitHubCommits(): Promise<LiveFeedItem[]> {
   const CACHE_KEY = 'github_commits_cache';
@@ -25,11 +25,11 @@ export async function fetchLiveGitHubCommits(): Promise<LiveFeedItem[]> {
 
   try {
     const cached = localStorage.getItem(CACHE_KEY);
-    if (cached) {
-      const { data, timestamp } = JSON.parse(cached);
-      if (Date.now() - timestamp < CACHE_TIME) {
-        return data;
-      }
+    const cachedObj = cached ? JSON.parse(cached) : null;
+    
+    // Check if we have valid cache and it's fresh
+    if (cachedObj && Date.now() - cachedObj.timestamp < CACHE_TIME) {
+      return cachedObj.data;
     }
 
     const res = await fetch(`${GITHUB_REPO_API}/commits?per_page=5`, {
@@ -38,17 +38,16 @@ export async function fetchLiveGitHubCommits(): Promise<LiveFeedItem[]> {
 
     if (res.status === 403) {
       console.debug('GitHub API rate limit reached. Using cached commits.');
-      const cached = localStorage.getItem(CACHE_KEY);
-      if (cached) return JSON.parse(cached).data;
-      return [];
+      return cachedObj ? cachedObj.data : [];
     }
 
     if (!res.ok) {
-      throw new Error(`GitHub commits fetch failed: ${res.status}`);
+      return cachedObj ? cachedObj.data : [];
     }
+    
     const commits = await res.json();
     
-    const data = commits.map((c: any, index: number) => {
+    const data = Array.isArray(commits) ? commits.map((c: any, index: number) => {
       const date = new Date(c.commit.committer.date);
       const hoursAgo = Math.max(1, Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60)));
       const timeAgo = hoursAgo > 24 ? `${Math.floor(hoursAgo / 24)}d ago` : `${hoursAgo}h ago`;
@@ -62,13 +61,16 @@ export async function fetchLiveGitHubCommits(): Promise<LiveFeedItem[]> {
         author: `by @${c.author?.login || c.commit.author.name}`,
         url: c.html_url
       };
-    });
+    }) : [];
 
-    localStorage.setItem(CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
+    if (data.length > 0) {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
+    }
     return data;
   } catch (err) {
     console.warn('Live GitHub commits fetch error:', err);
-    return [];
+    const cached = localStorage.getItem(CACHE_KEY);
+    return cached ? JSON.parse(cached).data : [];
   }
 }
 

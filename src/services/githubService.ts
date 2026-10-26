@@ -60,53 +60,53 @@ function storeLatest(release: GitHubRelease) {
 
 /**
  * Fetches the freshest release directly from GitHub API.
+ * Uses /releases instead of /releases/latest for better consistency.
  * Always respects the live API result first.
  */
 export async function fetchLatestRelease(): Promise<GitHubRelease | null> {
   try {
-    const timestamp = Date.now();
-    
-    // Only fetch /releases/latest to save API quota as per user request to only show latest
-    const response = await fetch(`${GITHUB_API_BASE}/releases/latest?_t=${timestamp}`, {
-      cache: 'no-store',
-      headers: { 'Accept': 'application/vnd.github.v3+json' }
-    });
-
-    if (response.status === 403) {
-      console.debug('GitHub rate limit reached for latest release.');
-    } else if (response.ok) {
-      const latest: GitHubRelease = await response.json();
-      if (latest) {
-        storeLatest(latest);
-        return latest;
-      }
-    }
-
-    // If live API returned empty (e.g. rate limit), use stored live data if available
-    return getStoredLatest();
-  } catch (err) {
-    console.debug('GitHub API live query failed, utilizing cached release if any:', err);
-    return getStoredLatest();
-  }
-}
-
-
-
-export async function fetchRepoMetadata(): Promise<GitHubRepoMeta> {
-  try {
-    const timestamp = Date.now();
-    const response = await fetch(`${GITHUB_API_BASE}?_t=${timestamp}`, {
-      headers: {
+    // Using /releases/latest is more direct and returns only the single latest stable release
+    const response = await fetch(`${GITHUB_API_BASE}/releases/latest`, {
+      method: 'GET',
+      headers: { 
         'Accept': 'application/vnd.github.v3+json'
       }
     });
 
     if (response.status === 403) {
-       return FALLBACK_REPO_META;
+      const stored = getStoredLatest();
+      if (stored) {
+        console.warn('GitHub API Rate Limit reached (403). Using cached release:', stored.tag_name);
+        return stored;
+      }
+      return null;
     }
 
-    if (!response.ok) {
-      return FALLBACK_REPO_META;
+    if (response.ok) {
+      const latest: GitHubRelease = await response.json();
+      if (latest && latest.tag_name) {
+        storeLatest(latest);
+        return latest;
+      }
+    }
+
+    return getStoredLatest();
+  } catch (err) {
+    console.debug('GitHub API fetch failed (network error), using cache:', err);
+    return getStoredLatest();
+  }
+}
+
+export async function fetchRepoMetadata(): Promise<GitHubRepoMeta> {
+  try {
+    const response = await fetch(GITHUB_API_BASE, {
+      headers: {
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+
+    if (response.status === 403 || !response.ok) {
+       return FALLBACK_REPO_META;
     }
 
     const data: GitHubRepoMeta = await response.json();
@@ -128,7 +128,7 @@ export function formatBytes(bytes: number, decimals = 1): string {
 
 export function getPreferredDownloadAsset(release: GitHubRelease) {
   const tagName = release.tag_name;
-  let extractedSha = '7b55db5a7bcda110fa956e187bfb156b82531da0b043c7b966b96e94e5e79685';
+  let extractedSha = '';
 
   if (release.body) {
     const shaMatch = release.body.match(/[a-fA-F0-9]{64}/);
@@ -145,7 +145,7 @@ export function getPreferredDownloadAsset(release: GitHubRelease) {
     if (signedApk && signedApk.browser_download_url) {
       return {
         ...signedApk,
-        digest: signedApk.digest || `sha256:${extractedSha}`
+        digest: signedApk.digest || (extractedSha ? `sha256:${extractedSha}` : undefined)
       };
     }
 
@@ -154,7 +154,7 @@ export function getPreferredDownloadAsset(release: GitHubRelease) {
     if (anyApk && anyApk.browser_download_url) {
       return {
         ...anyApk,
-        digest: anyApk.digest || `sha256:${extractedSha}`
+        digest: anyApk.digest || (extractedSha ? `sha256:${extractedSha}` : undefined)
       };
     }
   }
@@ -163,8 +163,8 @@ export function getPreferredDownloadAsset(release: GitHubRelease) {
   return {
     name: 'KaspaBrowser-release-signed.apk',
     browser_download_url: `https://github.com/Curious-being99/Kaspa-browser-/releases/download/${tagName}/KaspaBrowser-release-signed.apk`,
-    size: release.assets?.[0]?.size || 24870773,
-    digest: `sha256:${extractedSha}`
+    size: release.assets?.[0]?.size || 0,
+    digest: extractedSha ? `sha256:${extractedSha}` : undefined
   };
 }
 

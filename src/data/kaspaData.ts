@@ -2,7 +2,7 @@ import { GitHubRelease, GitHubRepoMeta, FeatureItem } from '../types';
 
 export const GITHUB_REPO_URL = 'https://github.com/Curious-being99/Kaspa-browser-';
 export const GITHUB_RELEASES_URL = 'https://github.com/Curious-being99/Kaspa-browser-/releases';
-export const GITHUB_API_BASE = 'https://api.github.com/repos/Curious-being99/Kaspa-browser-';
+export const GITHUB_API_BASE = '/api/github';
 
 
 
