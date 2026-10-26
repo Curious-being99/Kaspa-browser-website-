@@ -267,7 +267,7 @@ export function getPreferredDownloadAsset(release: GitHubRelease) {
   const resolvedTag = (tagName && tagName !== 'latest') ? tagName : DEFAULT_LATEST_RELEASE.tag_name;
   return {
     name: 'KaspaBrowser-release-signed.apk',
-    browser_download_url: `https://github.com/Curious-being99/Kaspa-browser-/releases/download/${resolvedTag}/KaspaBrowser-release-signed.apk`,
+    browser_download_url: `https://github.com/Curious-being99/Kaspa-browser/releases/download/${resolvedTag}/KaspaBrowser-release-signed.apk`,
     size: release.assets?.[0]?.size || defaultAsset?.size || 21068947,
     digest: `sha256:${extractedSha}`
   };

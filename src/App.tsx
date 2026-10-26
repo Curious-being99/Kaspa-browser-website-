@@ -23,12 +23,14 @@ import {
   triggerBrowserDownload,
   getPreferredDownloadAsset
 } from './services/githubService';
+import { fetchLiveKaspaStats, LiveKaspaStats } from './services/liveKaspaService';
 import { DEFAULT_LATEST_RELEASE, FALLBACK_RELEASES, FALLBACK_REPO_META } from './data/kaspaData';
 
 export default function App() {
   const [latestRelease, setLatestRelease] = useState<GitHubRelease | null>(DEFAULT_LATEST_RELEASE);
   const [allReleases, setAllReleases] = useState<GitHubRelease[]>(FALLBACK_RELEASES);
   const [repoMeta, setRepoMeta] = useState<GitHubRepoMeta | null>(FALLBACK_REPO_META);
+  const [kaspaStats, setKaspaStats] = useState<LiveKaspaStats | null>(null);
 
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -38,12 +40,13 @@ export default function App() {
   useEffect(() => {
     let isMounted = true;
 
-    async function loadGithubData() {
+    async function loadData() {
       try {
-        const [latest, list, meta] = await Promise.all([
+        const [latest, list, meta, stats] = await Promise.all([
           fetchLatestRelease(),
           fetchAllReleases(),
-          fetchRepoMetadata()
+          fetchRepoMetadata(),
+          fetchLiveKaspaStats()
         ]);
         if (!isMounted) return;
         if (latest) {
@@ -53,17 +56,18 @@ export default function App() {
           setAllReleases(list);
         }
         if (meta) setRepoMeta(meta);
+        if (stats) setKaspaStats(stats);
       } catch (err) {
-        console.warn('Could not refresh from GitHub API, using fallback data:', err);
+        console.warn('Could not refresh data, using fallback data:', err);
       }
     }
 
-    loadGithubData();
+    loadData();
 
-    // Auto-poll GitHub API every 30 seconds to immediately catch newly published releases
+    // Auto-poll API every 10 seconds to immediately catch newly published releases and price updates
     const interval = setInterval(() => {
-      loadGithubData();
-    }, 30000);
+      loadData();
+    }, 10000);
 
     return () => {
       isMounted = false;
@@ -93,6 +97,7 @@ export default function App() {
       {/* Navigation Bar */}
       <Navbar
         repoMeta={repoMeta}
+        kaspaStats={kaspaStats}
         onQrClick={() => setIsQrModalOpen(true)}
       />
 

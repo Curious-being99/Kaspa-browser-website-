@@ -107,10 +107,10 @@ export const FeaturesGrid: React.FC = () => {
                   {feature.highlights.map((highlight, idx) => (
                     <li 
                       key={idx} 
-                      className="flex items-start gap-2.5 text-xs text-gray-300 font-sans tracking-tight leading-snug"
+                      className="flex items-start gap-3 text-xs text-gray-300 tracking-tight"
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#70C7BA] mt-1.5 shrink-0 opacity-80" />
-                      <span className="text-gray-300 group-hover:text-gray-200 transition-colors">{highlight}</span>
+                      <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#70C7BA] shrink-0 shadow-[0_0_8px_rgba(112,199,186,0.6)]" />
+                      <span className="text-gray-200">{highlight}</span>
                     </li>
                   ))}
                 </ul>

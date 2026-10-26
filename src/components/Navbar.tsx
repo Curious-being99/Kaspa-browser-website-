@@ -6,19 +6,24 @@ import {
   X, 
   ExternalLink, 
   Radio, 
-  Sparkles 
+  Sparkles,
+  Coins
 } from 'lucide-react';
 import { KaspaLogo } from './KaspaLogo';
 import { GitHubRepoMeta } from '../types';
 import { GITHUB_REPO_URL, GITHUB_RELEASES_URL } from '../data/kaspaData';
 
+import { LiveKaspaStats } from '../services/liveKaspaService';
+
 interface NavbarProps {
   repoMeta: GitHubRepoMeta | null;
+  kaspaStats: LiveKaspaStats | null;
   onQrClick: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   repoMeta,
+  kaspaStats,
   onQrClick
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -47,31 +52,61 @@ export const Navbar: React.FC<NavbarProps> = ({
       id="navbar-header"
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-[#0C0D10]/90 backdrop-blur-md border-b border-[#282C37]/80 py-3 shadow-lg shadow-black/40' 
-          : 'bg-transparent py-5'
+          ? 'bg-[#0C0D10]/95 backdrop-blur-md border-b border-[#282C37]/80 py-2 shadow-lg shadow-black/40' 
+          : 'bg-[#0C0D10]/80 backdrop-blur-sm py-3 border-b border-[#282C37]/40'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        {/* Brand Logo */}
+      {/* Marquee Slogan Ticker */}
+      <div className="w-full bg-[#14161C] border-b border-[#70C7BA]/30 py-1.5 overflow-hidden relative">
+        <div className="animate-marquee whitespace-nowrap text-xs font-mono flex items-center gap-8 text-gray-300">
+          <span className="flex items-center gap-2">
+            <span className="text-white font-extrabold italic">Slogan: We Stand, Build, Hold, Trade &amp; Succeed</span>
+          </span>
+          <span className="text-gray-400">•</span>
+          <span className="flex items-center gap-2">
+            <span className="text-white font-extrabold italic">Slogan: We Stand, Build, Hold, Trade &amp; Succeed</span>
+          </span>
+          <span className="text-gray-400">•</span>
+          {/* Duplicate set for seamless infinite loop */}
+          <span className="flex items-center gap-2">
+            <span className="text-white font-extrabold italic">Slogan: We Stand, Build, Hold, Trade &amp; Succeed</span>
+          </span>
+          <span className="text-gray-400">•</span>
+          <span className="flex items-center gap-2">
+            <span className="text-white font-extrabold italic">Slogan: We Stand, Build, Hold, Trade &amp; Succeed</span>
+          </span>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between pt-2">
+        {/* Brand Logo & Price */}
         <a 
           id="nav-brand-logo"
           href="#" 
           className="flex items-center gap-3 group text-decoration-none"
         >
           <KaspaLogo className="w-9 h-9 rounded-full shadow-sm transition-transform group-hover:scale-105" />
-          <span className="font-extrabold text-xl tracking-tight text-[#F3F4F6] group-hover:text-white transition-colors">
-            Kaspa<span className="text-[#70C7BA]">Browser</span>
-          </span>
+          <div className="flex flex-col">
+            <span className="font-extrabold text-xl tracking-tight text-[#F3F4F6] group-hover:text-white transition-colors">
+              Kaspa<span className="text-[#70C7BA]">Browser</span>
+            </span>
+            <span className="text-[10px] font-mono text-[#70C7BA] font-bold mt-1">
+              KAS: ${kaspaStats?.priceUsd.toFixed(4) || '...'} 
+              <span className={kaspaStats && kaspaStats.change24h >= 0 ? 'text-emerald-400' : 'text-red-400'}>
+                ({kaspaStats ? (kaspaStats.change24h >= 0 ? '+' : '') + kaspaStats.change24h.toFixed(2) + '%' : '...'})
+              </span>
+            </span>
+          </div>
         </a>
 
         {/* Desktop Nav Links */}
-        <nav className="hidden lg:flex items-center gap-6">
+        <nav className="hidden lg:flex items-center gap-5">
           {navLinks.map((link) => (
             <a
               key={link.label}
               id={`nav-link-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
               href={link.href}
-              className="text-sm font-medium text-gray-300 hover:text-[#70C7BA] transition-colors relative py-1 hover:after:w-full after:w-0 after:h-0.5 after:bg-[#70C7BA] after:absolute after:bottom-0 after:left-0 after:transition-all"
+              className="text-xs font-medium text-gray-300 hover:text-[#70C7BA] transition-colors relative py-1 hover:after:w-full after:w-0 after:h-0.5 after:bg-[#70C7BA] after:absolute after:bottom-0 after:left-0 after:transition-all"
             >
               {link.label}
             </a>
@@ -79,14 +114,15 @@ export const Navbar: React.FC<NavbarProps> = ({
         </nav>
 
         {/* Action Buttons */}
-        <div className="hidden sm:flex items-center gap-3">
+        <div className="hidden sm:flex items-center gap-2.5">
+
           {/* GitHub Button */}
           <a
             id="nav-github-star-btn"
             href={GITHUB_REPO_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#14161C] border border-[#282C37] text-xs font-mono text-gray-300 hover:text-white hover:border-gray-500 transition-all hover:bg-[#1f222b]"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#14161C] border border-[#282C37] text-xs font-mono text-gray-300 hover:text-white hover:border-gray-500 transition-all hover:bg-[#1f222b]"
           >
             <Github className="w-3.5 h-3.5 text-gray-400" />
             <span>GitHub</span>

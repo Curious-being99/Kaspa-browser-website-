@@ -243,7 +243,7 @@ export const TECH_SPECS = [
 export const FAQS = [
   {
     q: 'What is KaspaBrowser and what are its core features?',
-    a: 'Kaspa Browser is a privacy-first, decentralized Android web browser and Web3 gateway designed to seamlessly bridge standard web browsing with peer-to-peer decentralized technologies and the Kaspa network ecosystem. Built with Kotlin and Jetpack Compose (Material 3), it unifies standard web browsing, decentralized peer-to-peer mesh discovery, cryptographic identity management, on-device local node hosting, and high-performance Web3 browsing into a fast, privacy-first mobile client.'
+    a: 'Kaspa Browser is a privacy-first, decentralized Android web browser, $KB utility token powered gateway, and Si Agent Command support tool for wallet live activities and transactions. Built with Kotlin and Jetpack Compose (Material 3), it unifies standard web browsing, decentralized peer-to-peer mesh discovery, cryptographic identity management, on-device local node hosting, and high-performance Web3 browsing into a fast, privacy-first mobile client.'
   },
   {
     q: 'What makes KaspaBrowser unique for decentralized browsing?',
@@ -260,6 +260,10 @@ export const FAQS = [
   {
     q: 'Is KaspaBrowser completely open source?',
     a: 'Yes, KaspaBrowser is 100% open source under the Apache 2.0 License. You can inspect the source code, review build scripts, and verify SHA-256 release checksums directly on GitHub.'
+  },
+  {
+    q: 'What utility does the $KB Token and Si Agent Command provide?',
+    a: 'The $KB utility token powers the KaspaBrowser ecosystem. The Si Agent Command provides advanced support for managing wallet live activities and streamlining decentralized transactions within the browser.'
   }
 ];
 
