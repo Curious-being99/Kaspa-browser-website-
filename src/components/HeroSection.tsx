@@ -57,7 +57,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       {/* Background Media */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="/src/assets/images/kaspa_browser_hero_1793041320223.jpg" 
+          src="/assets/images/kaspa_browser_hero_1793041320223.jpg" 
           alt="Kaspa Browser Visualization"
           className="w-full h-full object-cover opacity-30"
           referrerPolicy="no-referrer"
