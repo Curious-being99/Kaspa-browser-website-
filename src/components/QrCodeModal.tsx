@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { X, QrCode, Smartphone, Copy, Check, ExternalLink } from 'lucide-react';
+import { X, Copy, Check } from 'lucide-react';
 import { KaspaLogo } from './KaspaLogo';
 import { GitHubRelease } from '../types';
 import { getPreferredDownloadAsset } from '../services/githubService';
-import { DEFAULT_LATEST_RELEASE } from '../data/kaspaData';
 
 interface QrCodeModalProps {
   isOpen: boolean;
@@ -31,7 +30,7 @@ export const QrCodeModal: React.FC<QrCodeModalProps> = ({
   if (!isOpen) return null;
 
   const preferredAsset = latestRelease ? getPreferredDownloadAsset(latestRelease) : null;
-  const targetTag = latestRelease?.tag_name || DEFAULT_LATEST_RELEASE.tag_name;
+  const targetTag = latestRelease?.tag_name || 'latest';
   const downloadUrl = preferredAsset?.browser_download_url || 
     `https://github.com/Curious-being99/Kaspa-browser-/releases/download/${targetTag}/KaspaBrowser-release-signed.apk`;
 

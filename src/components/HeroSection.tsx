@@ -36,7 +36,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const [viewMode, setViewMode] = useState<'screenshot' | 'interactive'>('screenshot');
 
   const preferredAsset = latestRelease ? getPreferredDownloadAsset(latestRelease) : null;
-  const shaDigest = preferredAsset?.digest || 'sha256:0b535ecc3edf685c4c0349b31e909a9fc49dffcf2a83de10b49b2e9640053681';
+  const shaDigest = preferredAsset?.digest || '';
   const [feedItems, setFeedItems] = useState<any[]>([
     {
       id: 1,
@@ -180,31 +180,33 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     {isDownloading ? 'Starting Download...' : 'Auto Download Latest Release'}
                   </div>
                   <div className="text-[11px] font-mono font-medium text-emerald-950 opacity-90">
-                    {preferredAsset?.name || 'KaspaBrowser-release-signed.apk'} ({preferredAsset ? formatBytes(preferredAsset.size) : '21.8 MB'})
+                    {preferredAsset?.name || 'Latest Signed APK'} ({preferredAsset ? formatBytes(preferredAsset.size) : '...'})
                   </div>
                 </div>
               </button>
             </div>
 
             {/* Release Hash & Quick Verification Pill */}
-            <div className="pt-4 flex flex-wrap items-center justify-center gap-3 text-xs font-mono text-gray-400">
-              <span className="flex items-center gap-1.5 text-gray-400">
-                <Shield className="w-3.5 h-3.5 text-[#70C7BA]" />
-                <span>SHA-256:</span>
-              </span>
-              <button
-                onClick={copyHashToClipboard}
-                className="group inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-[#14161C] border border-[#282C37] hover:border-[#70C7BA]/50 text-gray-300 hover:text-white transition-all cursor-pointer"
-                title="Click to copy full SHA-256 hash"
-              >
-                <span className="truncate max-w-[200px] sm:max-w-xs">{shaDigest.replace('sha256:', '')}</span>
-                {copiedHash ? (
-                  <Check className="w-3.5 h-3.5 text-[#70C7BA]" />
-                ) : (
-                  <Copy className="w-3.5 h-3.5 text-gray-500 group-hover:text-gray-300" />
-                )}
-              </button>
-            </div>
+            {shaDigest && (
+              <div className="pt-4 flex flex-wrap items-center justify-center gap-3 text-xs font-mono text-gray-400">
+                <span className="flex items-center gap-1.5 text-gray-400">
+                  <Shield className="w-3.5 h-3.5 text-[#70C7BA]" />
+                  <span>SHA-256:</span>
+                </span>
+                <button
+                  onClick={copyHashToClipboard}
+                  className="group inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-[#14161C] border border-[#282C37] hover:border-[#70C7BA]/50 text-gray-300 hover:text-white transition-all cursor-pointer"
+                  title="Click to copy full SHA-256 hash"
+                >
+                  <span className="truncate max-w-[200px] sm:max-w-xs">{shaDigest.replace('sha256:', '')}</span>
+                  {copiedHash ? (
+                    <Check className="w-3.5 h-3.5 text-[#70C7BA]" />
+                  ) : (
+                    <Copy className="w-3.5 h-3.5 text-gray-500 group-hover:text-gray-300" />
+                  )}
+                </button>
+              </div>
+            )}
 
           </div>
 

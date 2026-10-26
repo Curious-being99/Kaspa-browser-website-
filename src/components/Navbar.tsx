@@ -12,6 +12,7 @@ import {
 import { KaspaLogo } from './KaspaLogo';
 import { GitHubRepoMeta } from '../types';
 import { GITHUB_REPO_URL, GITHUB_RELEASES_URL } from '../data/kaspaData';
+import { PWAInstallButton } from './PWAInstallButton';
 
 import { LiveKaspaStats } from '../services/liveKaspaService';
 
@@ -42,7 +43,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     { label: 'About Us', href: '#about-us' },
     { label: 'Features', href: '#features' },
     { label: 'Architecture', href: '#architecture' },
-    { label: 'Latest Release', href: '#releases' },
     { label: 'Installation', href: '#install-guide' },
     { label: 'FAQ', href: '#faq' }
   ];
@@ -90,7 +90,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="font-extrabold text-xl tracking-tight text-[#F3F4F6] group-hover:text-white transition-colors">
               Kaspa<span className="text-[#70C7BA]">Browser</span>
             </span>
-            <span className="text-[10px] font-mono text-[#70C7BA] font-bold mt-1">
+            <span className="text-[10px] font-mono text-[#70C7BA] font-bold mt-2 leading-tight">
               KAS: ${kaspaStats?.priceUsd.toFixed(4) || '...'} 
               <span className={kaspaStats && kaspaStats.change24h >= 0 ? 'text-emerald-400' : 'text-red-400'}>
                 ({kaspaStats ? (kaspaStats.change24h >= 0 ? '+' : '') + kaspaStats.change24h.toFixed(2) + '%' : '...'})
@@ -115,6 +115,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Action Buttons */}
         <div className="hidden sm:flex items-center gap-2.5">
+          <PWAInstallButton />
 
           {/* GitHub Button */}
           <a

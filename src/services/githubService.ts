@@ -1,34 +1,24 @@
 import { GitHubRelease, GitHubRepoMeta } from '../types';
 import { 
-  DEFAULT_LATEST_RELEASE, 
-  FALLBACK_RELEASES, 
   FALLBACK_REPO_META, 
   GITHUB_API_BASE 
 } from '../data/kaspaData';
 
 const LATEST_CACHE_KEY = 'kaspa_latest_release_v4';
-const ALL_RELEASES_CACHE_KEY = 'kaspa_all_releases_v4';
 
 /**
  * Extracts a normalized Unix epoch millisecond timestamp from a release.
- * Correctly parses ISO strings as well as formatted tags like v1.0.20260922123310.
  */
 export function getReleaseTimestamp(release?: GitHubRelease | null): number {
   if (!release) return 0;
-  
-  // 1. Try published_at
   if (release.published_at) {
     const t = new Date(release.published_at).getTime();
     if (!isNaN(t) && t > 0) return t;
   }
-
-  // 2. Try created_at
   if (release.created_at) {
     const t = new Date(release.created_at).getTime();
     if (!isNaN(t) && t > 0) return t;
   }
-
-  // 3. Parse tag timestamp e.g. v1.0.20260922123310 -> YYYY=2026, MM=09, DD=22, HH=12, mm=33, ss=10
   if (release.tag_name) {
     const match = release.tag_name.match(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/);
     if (match) {
@@ -37,7 +27,6 @@ export function getReleaseTimestamp(release?: GitHubRelease | null): number {
       if (!isNaN(t) && t > 0) return t;
     }
   }
-
   return release.id || 0;
 }
 
@@ -56,7 +45,7 @@ function getStoredLatest(): GitHubRelease | null {
       if (parsed && parsed.tag_name) return parsed;
     }
   } catch (e) {
-    // Ignore storage errors in restricted contexts
+    // Ignore storage
   }
   return null;
 }
@@ -65,28 +54,7 @@ function storeLatest(release: GitHubRelease) {
   try {
     localStorage.setItem(LATEST_CACHE_KEY, JSON.stringify(release));
   } catch (e) {
-    // Ignore storage errors
-  }
-}
-
-function getStoredAllReleases(): GitHubRelease[] | null {
-  try {
-    const raw = localStorage.getItem(ALL_RELEASES_CACHE_KEY);
-    if (raw) {
-      const parsed: GitHubRelease[] = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-    }
-  } catch (e) {
-    // Ignore storage errors
-  }
-  return null;
-}
-
-function storeAllReleases(releases: GitHubRelease[]) {
-  try {
-    localStorage.setItem(ALL_RELEASES_CACHE_KEY, JSON.stringify(releases));
-  } catch (e) {
-    // Ignore storage errors
+    // Ignore storage
   }
 }
 
@@ -94,108 +62,35 @@ function storeAllReleases(releases: GitHubRelease[]) {
  * Fetches the freshest release directly from GitHub API.
  * Always respects the live API result first.
  */
-export async function fetchLatestRelease(): Promise<GitHubRelease> {
+export async function fetchLatestRelease(): Promise<GitHubRelease | null> {
   try {
     const timestamp = Date.now();
     
-    // Concurrently fetch both /releases/latest and /releases list to ensure freshest release
-    const [latestRes, listRes] = await Promise.allSettled([
-      fetch(`${GITHUB_API_BASE}/releases/latest?_t=${timestamp}`, {
-        cache: 'no-store',
-        headers: { 'Accept': 'application/vnd.github.v3+json' }
-      }),
-      fetch(`${GITHUB_API_BASE}/releases?_t=${timestamp}`, {
-        cache: 'no-store',
-        headers: { 'Accept': 'application/vnd.github.v3+json' }
-      })
-    ]);
-
-    let latestFromEndpoint: GitHubRelease | null = null;
-    if (latestRes.status === 'fulfilled' && latestRes.value.ok) {
-      latestFromEndpoint = await latestRes.value.json();
-    }
-
-    let newestFromList: GitHubRelease | null = null;
-    if (listRes.status === 'fulfilled' && listRes.value.ok) {
-      const releasesList: GitHubRelease[] = await listRes.value.json();
-      if (releasesList && releasesList.length > 0) {
-        const sorted = [...releasesList].sort((a, b) => getReleaseTimestamp(b) - getReleaseTimestamp(a));
-        newestFromList = sorted[0];
-        storeAllReleases(sorted);
-      }
-    }
-
-    let liveNewest: GitHubRelease | null = null;
-    if (latestFromEndpoint && newestFromList) {
-      liveNewest = isNewerRelease(newestFromList, latestFromEndpoint) ? newestFromList : latestFromEndpoint;
-    } else {
-      liveNewest = newestFromList || latestFromEndpoint;
-    }
-
-    if (liveNewest) {
-      storeLatest(liveNewest);
-      return liveNewest;
-    }
-
-    // If live API returned empty (e.g. rate limit), use freshest between stored and DEFAULT_LATEST_RELEASE
-    const stored = getStoredLatest();
-    if (stored && DEFAULT_LATEST_RELEASE && isNewerRelease(DEFAULT_LATEST_RELEASE, stored)) {
-      return DEFAULT_LATEST_RELEASE;
-    }
-    return stored || DEFAULT_LATEST_RELEASE;
-  } catch (err) {
-    console.debug('GitHub API live query failed, utilizing cached/default release:', err);
-    const stored = getStoredLatest();
-    if (stored && DEFAULT_LATEST_RELEASE && isNewerRelease(DEFAULT_LATEST_RELEASE, stored)) {
-      return DEFAULT_LATEST_RELEASE;
-    }
-    return stored || DEFAULT_LATEST_RELEASE;
-  }
-}
-
-/**
- * Fetches all releases directly from GitHub API.
- */
-export async function fetchAllReleases(): Promise<GitHubRelease[]> {
-  try {
-    const timestamp = Date.now();
-    const response = await fetch(`${GITHUB_API_BASE}/releases?_t=${timestamp}`, {
+    // Only fetch /releases/latest to save API quota as per user request to only show latest
+    const response = await fetch(`${GITHUB_API_BASE}/releases/latest?_t=${timestamp}`, {
       cache: 'no-store',
-      headers: {
-        'Accept': 'application/vnd.github.v3+json'
-      }
+      headers: { 'Accept': 'application/vnd.github.v3+json' }
     });
 
-    if (response.ok) {
-      const data: GitHubRelease[] = await response.json();
-      if (data && Array.isArray(data) && data.length > 0) {
-        const sorted = [...data].sort((a, b) => getReleaseTimestamp(b) - getReleaseTimestamp(a));
-        storeAllReleases(sorted);
-        if (sorted[0]) storeLatest(sorted[0]);
-        return sorted;
+    if (response.status === 403) {
+      console.debug('GitHub rate limit reached for latest release.');
+    } else if (response.ok) {
+      const latest: GitHubRelease = await response.json();
+      if (latest) {
+        storeLatest(latest);
+        return latest;
       }
     }
 
-    const cachedAll = getStoredAllReleases();
-    if (cachedAll && cachedAll.length > 0) {
-      if (DEFAULT_LATEST_RELEASE && isNewerRelease(DEFAULT_LATEST_RELEASE, cachedAll[0])) {
-        return [DEFAULT_LATEST_RELEASE, ...cachedAll];
-      }
-      return cachedAll;
-    }
-    return FALLBACK_RELEASES;
+    // If live API returned empty (e.g. rate limit), use stored live data if available
+    return getStoredLatest();
   } catch (err) {
-    console.warn('GitHub API releases fetch failed, using cached/fallback:', err);
-    const cachedAll = getStoredAllReleases();
-    if (cachedAll && cachedAll.length > 0) {
-      if (DEFAULT_LATEST_RELEASE && isNewerRelease(DEFAULT_LATEST_RELEASE, cachedAll[0])) {
-        return [DEFAULT_LATEST_RELEASE, ...cachedAll];
-      }
-      return cachedAll;
-    }
-    return FALLBACK_RELEASES;
+    console.debug('GitHub API live query failed, utilizing cached release if any:', err);
+    return getStoredLatest();
   }
 }
+
+
 
 export async function fetchRepoMetadata(): Promise<GitHubRepoMeta> {
   try {
@@ -206,6 +101,10 @@ export async function fetchRepoMetadata(): Promise<GitHubRepoMeta> {
       }
     });
 
+    if (response.status === 403) {
+       return FALLBACK_REPO_META;
+    }
+
     if (!response.ok) {
       return FALLBACK_REPO_META;
     }
@@ -213,7 +112,7 @@ export async function fetchRepoMetadata(): Promise<GitHubRepoMeta> {
     const data: GitHubRepoMeta = await response.json();
     return data;
   } catch (err) {
-    console.warn('GitHub API repo metadata fetch failed, using fallback:', err);
+    console.debug('GitHub API repo metadata fetch failed, using fallback:', err);
     return FALLBACK_REPO_META;
   }
 }
@@ -228,19 +127,15 @@ export function formatBytes(bytes: number, decimals = 1): string {
 }
 
 export function getPreferredDownloadAsset(release: GitHubRelease) {
-  const defaultAsset = DEFAULT_LATEST_RELEASE.assets?.[0];
-  const defaultSha = defaultAsset?.digest?.replace('sha256:', '') || '7b55db5a7bcda110fa956e187bfb156b82531da0b043c7b966b96e94e5e79685';
+  const tagName = release.tag_name;
+  let extractedSha = '7b55db5a7bcda110fa956e187bfb156b82531da0b043c7b966b96e94e5e79685';
 
-  // Extract potential sha256 from release body if present
-  let extractedSha = defaultSha;
   if (release.body) {
     const shaMatch = release.body.match(/[a-fA-F0-9]{64}/);
     if (shaMatch) {
       extractedSha = shaMatch[0].toLowerCase();
     }
   }
-
-  const tagName = release.tag_name || DEFAULT_LATEST_RELEASE.tag_name;
 
   // 1. First priority: Look for signed APK asset in the release payload
   if (release.assets && release.assets.length > 0) {
@@ -265,11 +160,10 @@ export function getPreferredDownloadAsset(release: GitHubRelease) {
   }
 
   // 3. Direct mapping to GitHub release tag download route
-  const resolvedTag = (tagName && tagName !== 'latest') ? tagName : DEFAULT_LATEST_RELEASE.tag_name;
   return {
     name: 'KaspaBrowser-release-signed.apk',
-    browser_download_url: `https://github.com/Curious-being99/Kaspa-browser/releases/download/${resolvedTag}/KaspaBrowser-release-signed.apk`,
-    size: release.assets?.[0]?.size || defaultAsset?.size || 21068947,
+    browser_download_url: `https://github.com/Curious-being99/Kaspa-browser-/releases/download/${tagName}/KaspaBrowser-release-signed.apk`,
+    size: release.assets?.[0]?.size || 24870773,
     digest: `sha256:${extractedSha}`
   };
 }

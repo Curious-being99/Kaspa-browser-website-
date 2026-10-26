@@ -105,15 +105,7 @@ export const Footer: React.FC<FooterProps> = ({ latestRelease }) => {
                   <span className="text-[10px] text-gray-500 group-hover:text-[#70C7BA]">04</span>
                 </a>
               </li>
-              <li>
-                <a href="#releases" className="group flex items-center justify-between py-2 px-3 rounded-xl bg-[#14161C]/60 hover:bg-[#14161C] border border-[#282C37]/80 hover:border-[#70C7BA]/40 text-gray-300 hover:text-white transition-all shadow-sm">
-                  <span className="flex items-center gap-2.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#70C7BA] group-hover:scale-125 transition-transform"></span>
-                    Latest Release
-                  </span>
-                  <span className="text-[10px] text-gray-500 group-hover:text-[#70C7BA]">05</span>
-                </a>
-              </li>
+
               <li>
                 <a href="#install-guide" className="group flex items-center justify-between py-2 px-3 rounded-xl bg-[#14161C]/60 hover:bg-[#14161C] border border-[#282C37]/80 hover:border-[#70C7BA]/40 text-gray-300 hover:text-white transition-all shadow-sm">
                   <span className="flex items-center gap-2.5">
@@ -153,17 +145,7 @@ export const Footer: React.FC<FooterProps> = ({ latestRelease }) => {
                 </a>
               </li>
 
-              <li>
-                <a 
-                  href={GITHUB_RELEASES_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex items-center justify-between py-2.5 px-3 rounded-xl bg-[#14161C]/60 hover:bg-[#14161C] border border-[#282C37]/80 hover:border-[#70C7BA]/40 text-gray-300 hover:text-white transition-all shadow-sm"
-                >
-                  <span>GitHub Releases Stream</span>
-                  <ExternalLink className="w-3.5 h-3.5 text-gray-500 group-hover:text-[#70C7BA] flex-shrink-0" />
-                </a>
-              </li>
+
               <li>
                 <a 
                   href="https://kaspa.org"

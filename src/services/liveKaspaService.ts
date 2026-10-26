@@ -17,7 +17,7 @@ export interface LiveFeedItem {
   url?: string;
 }
 
-const GITHUB_REPO_API = '/api/github/repos/Curious-being99/Kaspa-browser-';
+const GITHUB_REPO_API = 'https://api.github.com/repos/Curious-being99/Kaspa-browser-';
 
 export async function fetchLiveGitHubCommits(): Promise<LiveFeedItem[]> {
   const CACHE_KEY = 'github_commits_cache';
@@ -35,8 +35,15 @@ export async function fetchLiveGitHubCommits(): Promise<LiveFeedItem[]> {
     const res = await fetch(`${GITHUB_REPO_API}/commits?per_page=5`, {
       headers: { 'Accept': 'application/vnd.github.v3+json' }
     });
+
+    if (res.status === 403) {
+      console.debug('GitHub API rate limit reached. Using cached commits.');
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) return JSON.parse(cached).data;
+      return [];
+    }
+
     if (!res.ok) {
-      console.error(`GitHub API error: ${res.status} - ${await res.text()}`);
       throw new Error(`GitHub commits fetch failed: ${res.status}`);
     }
     const commits = await res.json();

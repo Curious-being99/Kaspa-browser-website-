@@ -9,7 +9,6 @@ import { HeroSection } from './components/HeroSection';
 import { AboutSection } from './components/AboutSection';
 import { FeaturesGrid } from './components/FeaturesGrid';
 import { ArchitectureSection } from './components/ArchitectureSection';
-import { ReleasesViewer } from './components/ReleasesViewer';
 import { InstallationGuide } from './components/InstallationGuide';
 import { FaqSection } from './components/FaqSection';
 import { Footer } from './components/Footer';
@@ -18,17 +17,15 @@ import { QrCodeModal } from './components/QrCodeModal';
 import { GitHubRelease, GitHubRepoMeta } from './types';
 import { 
   fetchLatestRelease, 
-  fetchAllReleases, 
   fetchRepoMetadata,
   triggerBrowserDownload,
   getPreferredDownloadAsset
 } from './services/githubService';
 import { fetchLiveKaspaStats, LiveKaspaStats } from './services/liveKaspaService';
-import { DEFAULT_LATEST_RELEASE, FALLBACK_RELEASES, FALLBACK_REPO_META } from './data/kaspaData';
+import { FALLBACK_REPO_META } from './data/kaspaData';
 
 export default function App() {
-  const [latestRelease, setLatestRelease] = useState<GitHubRelease | null>(DEFAULT_LATEST_RELEASE);
-  const [allReleases, setAllReleases] = useState<GitHubRelease[]>(FALLBACK_RELEASES);
+  const [latestRelease, setLatestRelease] = useState<GitHubRelease | null>(null);
   const [repoMeta, setRepoMeta] = useState<GitHubRepoMeta | null>(FALLBACK_REPO_META);
   const [kaspaStats, setKaspaStats] = useState<LiveKaspaStats | null>(null);
 
@@ -36,46 +33,57 @@ export default function App() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadToast, setDownloadToast] = useState<string | null>(null);
 
-  // Load live release & repo data from GitHub API with live auto-refresh
+  // Load live release & repo data from GitHub API and Kaspa price stats
   useEffect(() => {
     let isMounted = true;
 
-    async function loadData() {
+    async function loadGitHubData() {
       try {
-        const [latest, list, meta, stats] = await Promise.all([
+        const [latest, meta] = await Promise.all([
           fetchLatestRelease(),
-          fetchAllReleases(),
-          fetchRepoMetadata(),
-          fetchLiveKaspaStats()
+          fetchRepoMetadata()
         ]);
         if (!isMounted) return;
-        if (latest) {
-          setLatestRelease(latest);
-        }
-        if (list && list.length > 0) {
-          setAllReleases(list);
-        }
+        if (latest) setLatestRelease(latest);
         if (meta) setRepoMeta(meta);
-        if (stats) setKaspaStats(stats);
       } catch (err) {
-        console.warn('Could not refresh data, using fallback data:', err);
+        console.warn('GitHub data refresh failed (likely rate limit):', err);
       }
     }
 
-    loadData();
+    async function loadPriceData() {
+      try {
+        const stats = await fetchLiveKaspaStats();
+        if (!isMounted) return;
+        if (stats) setKaspaStats(stats);
+      } catch (err) {
+        console.warn('Price data refresh failed:', err);
+      }
+    }
 
-    // Polling disabled to avoid rate limiting
-    const interval = null;
-
+    // Initial loads
+    loadGitHubData();
+    loadPriceData();
+    
+    // GitHub: 5 minutes (to prevent 403 rate limits in "no-express" client-only mode)
+    const githubInterval = setInterval(loadGitHubData, 300000);
+    
+    // Price: 10 seconds (CoinGecko / Kaspa API have higher limits)
+    const priceInterval = setInterval(loadPriceData, 10000);
 
     return () => {
       isMounted = false;
-      clearInterval(interval);
+      clearInterval(githubInterval);
+      clearInterval(priceInterval);
     };
   }, []);
 
   const handleTriggerDownload = (release?: GitHubRelease) => {
-    const targetRelease = release || latestRelease || DEFAULT_LATEST_RELEASE;
+    const targetRelease = release || latestRelease;
+    if (!targetRelease) {
+      window.open('https://github.com/Curious-being99/Kaspa-browser-/releases/latest', '_blank');
+      return;
+    }
     const asset = getPreferredDownloadAsset(targetRelease);
     if (asset) {
       setIsDownloading(true);
@@ -89,6 +97,7 @@ export default function App() {
       }, 5000);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-[#0C0D10] text-[#F3F4F6] selection:bg-[#70C7BA]/30 selection:text-[#70C7BA]">
@@ -122,10 +131,6 @@ export default function App() {
         {/* 4. Architecture & Technology Specifications */}
         <ArchitectureSection />
 
-        {/* 5. GitHub Releases Stream & Detailed Changelog */}
-        <ReleasesViewer
-          releases={allReleases}
-        />
 
         {/* 6. Step-by-Step Android Installation Guide */}
         <InstallationGuide />
