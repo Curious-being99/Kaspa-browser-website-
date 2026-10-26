@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Download, 
-  QrCode, 
-  Github, 
   Shield, 
   Copy, 
   Check, 
-  ExternalLink,
-  Lock,
   ArrowRight,
-  RefreshCw
+  ExternalLink,
+  ChevronRight
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { KaspaLogo } from './KaspaLogo';
 import { GitHubRelease, GitHubRepoMeta } from '../types';
-import { GITHUB_REPO_URL, GITHUB_RELEASES_URL } from '../data/kaspaData';
+import { GITHUB_REPO_URL } from '../data/kaspaData';
 import { formatBytes, getPreferredDownloadAsset } from '../services/githubService';
 
 interface HeroSectionProps {
@@ -28,61 +25,11 @@ interface HeroSectionProps {
 export const HeroSection: React.FC<HeroSectionProps> = ({
   latestRelease,
   onDownloadClick,
-  onQrClick,
   isDownloading
 }) => {
-  const [activeFilter, setActiveFilter] = useState<'All' | 'News' | 'YouTube' | 'Reddit' | 'GitHub'>('All');
   const [copiedHash, setCopiedHash] = useState(false);
-  const [viewMode, setViewMode] = useState<'screenshot' | 'interactive'>('screenshot');
-
   const preferredAsset = latestRelease ? getPreferredDownloadAsset(latestRelease) : null;
   const shaDigest = preferredAsset?.digest || '';
-  const [feedItems, setFeedItems] = useState<any[]>([
-    {
-      id: 1,
-      category: 'GitHub',
-      timeAgo: 'Live',
-      title: 'Fetching live repository commits from GitHub API...',
-      snippet: 'Connecting to https://api.github.com/repos/Curious-being99/Kaspa-browser-/commits',
-      author: 'by GitHub Actions CI'
-    }
-  ]);
-  const [isLoadingLive, setIsLoadingLive] = useState(true);
-
-  useEffect(() => {
-    let isMounted = true;
-    async function loadLive() {
-      try {
-        const commits = await import('../services/liveKaspaService').then(m => m.fetchLiveGitHubCommits());
-
-        if (!isMounted) return;
-
-        if (commits && commits.length > 0) {
-          setFeedItems([
-            ...commits,
-            {
-              id: 'kaspa-net-1',
-              category: 'News',
-              timeAgo: 'Real-Time',
-              title: 'Kaspa BlockDAG Network Active',
-              snippet: 'High-performance Web3 browsing with Cronet HTTP/3 QUIC transport.',
-              author: 'by Kaspa Network Node'
-            }
-          ]);
-        }
-      } catch (e) {
-        console.warn('Failed to load live data:', e);
-      } finally {
-        if (isMounted) setIsLoadingLive(false);
-      }
-    }
-    loadLive();
-    return () => { isMounted = false; };
-  }, []);
-
-  const filteredFeedItems = activeFilter === 'All' 
-    ? feedItems 
-    : feedItems.filter(item => item.category === activeFilter);
 
   const copyHashToClipboard = async () => {
     try {
@@ -100,120 +47,157 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         document.execCommand('copy');
         setCopiedHash(true);
         setTimeout(() => setCopiedHash(false), 2000);
-      } catch {
-        // ignore
-      }
+      } catch { /* ignore */ }
       document.body.removeChild(textArea);
     }
   };
 
   return (
-    <section 
-      id="overview" 
-      className="relative pt-28 pb-20 overflow-hidden bg-grid-pattern border-b border-[#282C37]/50"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
+    <section className="relative min-h-[90vh] flex items-center pt-32 pb-20 overflow-hidden">
+      {/* Background Media */}
+      <div className="absolute inset-0 z-0">
+        <img 
+          src="/src/assets/images/kaspa_browser_hero_1793041320223.jpg" 
+          alt="Kaspa Browser Visualization"
+          className="w-full h-full object-cover opacity-30"
+          referrerPolicy="no-referrer"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0C0D10] via-transparent to-[#0C0D10]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0C0D10] via-[#0C0D10]/80 to-transparent" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           
-          {/* Headline & CTA */}
-          <div className="space-y-6 text-center lg:text-left">
-            
-            {/* Main Headline */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#14161C] border border-[#70C7BA]/40 text-xs font-mono text-[#70C7BA]">
-              <KaspaLogo className="w-4 h-4 rounded-full shadow-sm" />
-              <span>Decentralized Android Client</span>
+          {/* Content Left */}
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            className="space-y-8"
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#70C7BA]/10 border border-[#70C7BA]/20 text-[#70C7BA] text-xs font-mono font-bold tracking-wider uppercase">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#70C7BA] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#70C7BA]"></span>
+              </span>
+              v{latestRelease?.tag_name || '2.1'} Stable Release
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#F3F4F6] leading-[1.1]">
-              The Web3 Browser Engineered for <br />
-              <span className="text-[#70C7BA]">
-                Kaspa BlockDAG
-              </span>
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tighter text-white leading-[0.9]">
+              WEB3 BROWSER FOR <br />
+              <span className="text-[#70C7BA]">KASPA BLOCKDAG</span>
             </h1>
 
-            {/* $KB Token Callout Banner */}
-            <div className="my-6 p-5 rounded-2xl bg-[#14161C] border border-[#282C37] flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-start sm:items-center gap-3.5">
-                <div className="flex flex-col items-center gap-1 shrink-0">
-                  <div className="w-11 h-11 rounded-xl bg-transparent border border-[#282C37] flex items-center justify-center">
-                    <KaspaLogo className="w-7 h-7" />
-                  </div>
-                </div>
+            <p className="text-lg text-gray-400 max-w-xl leading-relaxed">
+              Engineered for speed, privacy, and decentralized connectivity. 
+              KaspaBrowser is your native gateway to the BlockDAG ecosystem, 
+              featuring $KB utility integration and Si Agent automation.
+            </p>
 
-                <div className="text-left space-y-1">
-                  <div className="text-sm font-extrabold text-white flex items-center gap-2 flex-wrap">
-                    <span>Buy $KB</span>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-[#70C7BA]/20 text-[#70C7BA] border border-[#70C7BA]/40 font-bold uppercase">
-                      KaspaRocket
-                    </span>
-                  </div>
-                  <div className="text-xs text-[#70C7BA] italic font-semibold pt-0.5">
-                    Slogan: &quot;We Stand, Build, Hold, Trade &amp; Succeed&quot;
-                  </div>
-                </div>
-              </div>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+              <button
+                onClick={onDownloadClick}
+                disabled={isDownloading}
+                className="group relative flex items-center justify-center gap-4 px-8 py-5 rounded-2xl bg-[#70C7BA] text-[#0C0D10] font-black text-lg transition-all hover:scale-105 hover:brightness-110 active:scale-95 disabled:opacity-50"
+              >
+                {isDownloading ? (
+                  <div className="w-6 h-6 border-4 border-[#0C0D10]/20 border-t-[#0C0D10] rounded-full animate-spin" />
+                ) : (
+                  <Download className="w-6 h-6" />
+                )}
+                <span>{isDownloading ? 'Downloading...' : 'Auto Download APK'}</span>
+              </button>
 
-              <a
-                id="hero-buy-kb-btn"
-                href="https://kasparocket.fun/token/b75a6e90f569965bdeec23c460ebd59e0f0445d8aa8f5d4330fe15c66a47b4d8"
+              <a 
+                href={GITHUB_REPO_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#70C7BA] hover:brightness-110 text-[#0C0D10] font-black text-sm shadow-md transition-all shrink-0 hover:scale-105"
+                className="flex items-center justify-center gap-2 px-8 py-5 rounded-2xl bg-white/5 border border-white/10 text-white font-bold text-lg hover:bg-white/10 transition-all"
               >
-                <span>Buy $KB</span>
+                <span>View on GitHub</span>
+                <ChevronRight className="w-5 h-5 opacity-50" />
               </a>
             </div>
 
-            {/* Main Action Buttons */}
-            <div className="pt-4 flex flex-col items-center justify-center gap-4">
-              
-              {/* PRIMARY AUTO DOWNLOAD BUTTON */}
-              <button
-                id="hero-auto-download-btn"
-                onClick={onDownloadClick}
-                disabled={isDownloading}
-                className="group relative inline-flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-[#70C7BA] hover:brightness-110 text-[#0C0D10] font-extrabold text-base sm:text-lg shadow-sm transition-all transform active:scale-98 cursor-pointer overflow-hidden"
-              >
-                <Download className={`w-5 h-5 stroke-[2.5] ${isDownloading ? 'animate-bounce' : 'group-hover:translate-y-0.5'} transition-transform`} />
-                <div className="text-left">
-                  <div className="leading-tight">
-                    {isDownloading ? 'Starting Download...' : 'Auto Download Latest Release'}
-                  </div>
-                  <div className="text-[11px] font-mono font-medium text-emerald-950 opacity-90">
-                    {preferredAsset?.name || 'Latest Signed APK'} ({preferredAsset ? formatBytes(preferredAsset.size) : '...'})
-                  </div>
-                </div>
-              </button>
-            </div>
-
-            {/* Release Hash & Quick Verification Pill */}
+            {/* SHA Verification */}
             {shaDigest && (
-              <div className="pt-4 flex flex-wrap items-center justify-center gap-3 text-xs font-mono text-gray-400">
-                <span className="flex items-center gap-1.5 text-gray-400">
-                  <Shield className="w-3.5 h-3.5 text-[#70C7BA]" />
-                  <span>SHA-256:</span>
-                </span>
+              <div className="flex items-center gap-3 text-xs font-mono text-gray-500">
+                <Shield className="w-4 h-4 text-[#70C7BA]" />
+                <span className="hidden sm:inline">SHA-256:</span>
                 <button
                   onClick={copyHashToClipboard}
-                  className="group inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-[#14161C] border border-[#282C37] hover:border-[#70C7BA]/50 text-gray-300 hover:text-white transition-all cursor-pointer"
-                  title="Click to copy full SHA-256 hash"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:border-[#70C7BA]/40 transition-colors"
                 >
-                  <span className="truncate max-w-[200px] sm:max-w-xs">{shaDigest.replace('sha256:', '')}</span>
-                  {copiedHash ? (
-                    <Check className="w-3.5 h-3.5 text-[#70C7BA]" />
-                  ) : (
-                    <Copy className="w-3.5 h-3.5 text-gray-500 group-hover:text-gray-300" />
-                  )}
+                  <span className="truncate max-w-[120px] sm:max-w-xs">{shaDigest.replace('sha256:', '')}</span>
+                  {copiedHash ? <Check className="w-3.5 h-3.5 text-[#70C7BA]" /> : <Copy className="w-3.5 h-3.5" />}
                 </button>
               </div>
             )}
+          </motion.div>
 
-          </div>
+          {/* Visual Right (Optional device mockup or stats) */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="hidden lg:block relative"
+          >
+            <div className="relative z-10 p-8 rounded-[3rem] bg-[#14161C] border border-white/5 shadow-2xl backdrop-blur-3xl">
+              <div className="space-y-6">
+                <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-[#70C7BA]/10 flex items-center justify-center">
+                      <KaspaLogo className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-white">KaspaBrowser v2.1</div>
+                      <div className="text-[10px] text-gray-500 font-mono">Build: 2026.09.18-SIGNED</div>
+                    </div>
+                  </div>
+                  <div className="px-2 py-1 rounded-md bg-[#70C7BA]/10 text-[#70C7BA] text-[10px] font-bold">STABLE</div>
+                </div>
+
+                <div className="space-y-4">
+                  {[
+                    { label: 'Network', value: 'BlockDAG Mainnet' },
+                    { label: 'Security', value: 'SHA-256 Verified' },
+                    { label: 'Core', value: 'Kotlin 2.0 Native' },
+                    { label: 'Features', value: '$KB + Si Agent' }
+                  ].map((stat, i) => (
+                    <div key={i} className="flex items-center justify-between text-sm">
+                      <span className="text-gray-500">{stat.label}</span>
+                      <span className="text-gray-300 font-mono">{stat.value}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="pt-4 mt-4 border-t border-white/5">
+                  <div className="text-[10px] text-gray-500 uppercase tracking-widest mb-3">Live Feed</div>
+                  <div className="space-y-2">
+                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ width: '0%' }}
+                        animate={{ width: '100%' }}
+                        transition={{ duration: 10, repeat: Infinity }}
+                        className="h-full bg-[#70C7BA]"
+                      />
+                    </div>
+                    <div className="flex justify-between text-[8px] font-mono text-[#70C7BA]/60">
+                      <span>SYNCING_BLOCKS...</span>
+                      <span>LATENCY: 12ms</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Glowing background behind card */}
+            <div className="absolute inset-0 bg-[#70C7BA] blur-[120px] opacity-10 rounded-full" />
+          </motion.div>
 
         </div>
       </div>
     </section>
   );
 };
-
-

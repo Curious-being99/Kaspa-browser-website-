@@ -13,6 +13,7 @@ import { InstallationGuide } from './components/InstallationGuide';
 import { FaqSection } from './components/FaqSection';
 import { Footer } from './components/Footer';
 import { QrCodeModal } from './components/QrCodeModal';
+import { EcosystemSection } from './components/EcosystemSection';
 
 import { GitHubRelease, GitHubRepoMeta } from './types';
 import { 
@@ -131,7 +132,10 @@ export default function App() {
         {/* 3. Core Features (Features Grid) */}
         <FeaturesGrid />
 
-        {/* 4. Architecture & Technology Specifications */}
+        {/* 4. $KB & Si Agent Ecosystem */}
+        <EcosystemSection />
+
+        {/* 5. Architecture & Technology Specifications */}
         <ArchitectureSection />
 
 

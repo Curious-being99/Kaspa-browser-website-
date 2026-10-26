@@ -99,6 +99,10 @@ export const TECH_SPECS = [
 
 export const FAQS = [
   {
+    q: 'How do I ensure the website always shows the latest update?',
+    a: 'The website automatically fetches the latest release from GitHub every 5 minutes. To ensure consistent performance and avoid GitHub API rate limits, you should configure a GITHUB_TOKEN in your Vercel project environment variables. You can generate a token at https://github.com/settings/tokens.'
+  },
+  {
     q: 'What is KaspaBrowser and what are its core features?',
     a: 'Kaspa Browser is a privacy-first, decentralized Android web browser, $KB utility token powered gateway, and Si Agent Command support tool for wallet live activities and transactions. Built with Kotlin and Jetpack Compose (Material 3), it unifies standard web browsing, decentralized peer-to-peer mesh discovery, cryptographic identity management, on-device local node hosting, and high-performance Web3 browsing into a fast, privacy-first mobile client.'
   },
