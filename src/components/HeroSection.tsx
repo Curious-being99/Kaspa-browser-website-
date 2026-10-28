@@ -14,6 +14,7 @@ import { GitHubRelease, GitHubRepoMeta } from '../types';
 import { GITHUB_REPO_URL } from '../data/kaspaData';
 import { formatBytes, getPreferredDownloadAsset } from '../services/githubService';
 import { KB_TOKEN_CONTRACT } from '../services/tokenService';
+import heroBgImage from '../assets/images/kaspa_blockdag_hero_background_1793176557783.jpg';
 
 interface HeroSectionProps {
   latestRelease: GitHubRelease | null;
@@ -66,7 +67,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       {/* Background Media */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="/src/assets/images/kaspa_blockdag_hero_background_1793176557783.jpg" 
+          src={heroBgImage} 
           alt="Kaspa BlockDAG Network Visualization"
           className="w-full h-full object-cover opacity-25"
           referrerPolicy="no-referrer"
