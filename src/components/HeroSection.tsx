@@ -100,8 +100,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </h1>
 
             <p className="text-lg text-gray-400 max-w-xl leading-relaxed">
-              Engineered for speed, privacy, and decentralized connectivity. 
-              KaspaBrowser is your native gateway to the BlockDAG ecosystem.
+              Engineered for speed, privacy, and decentralized connectivity. KaspaBrowser is your native gateway to the Kaspa BlockDAG ecosystem, with $KB — the meme-born utility token of the KaspaBrowser ecosystem.
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
