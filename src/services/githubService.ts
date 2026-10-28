@@ -59,41 +59,31 @@ function storeLatest(release: GitHubRelease) {
 }
 
 /**
- * Fetches the freshest release directly from GitHub API.
- * Uses /releases instead of /releases/latest for better consistency.
- * Always respects the live API result first.
+ * Fetches the absolute latest release directly from GitHub API.
+ * Strictly returns only the latest release with no fallback or stale cache.
  */
 export async function fetchLatestRelease(): Promise<GitHubRelease | null> {
   try {
-    // Using /releases/latest is more direct and returns only the single latest stable release
-    const response = await fetch(`${GITHUB_API_BASE}/releases/latest`, {
+    const response = await fetch(`${GITHUB_API_BASE}/releases/latest?_t=${Date.now()}`, {
       method: 'GET',
+      cache: 'no-store',
       headers: { 
-        'Accept': 'application/vnd.github.v3+json'
+        'Accept': 'application/vnd.github.v3+json',
+        'Cache-Control': 'no-cache'
       }
     });
-
-    if (response.status === 403) {
-      const stored = getStoredLatest();
-      if (stored) {
-        console.warn('GitHub API Rate Limit reached (403). Using cached release:', stored.tag_name);
-        return stored;
-      }
-      return null;
-    }
 
     if (response.ok) {
       const latest: GitHubRelease = await response.json();
       if (latest && latest.tag_name) {
-        storeLatest(latest);
         return latest;
       }
     }
 
-    return getStoredLatest();
+    return null;
   } catch (err) {
-    console.debug('GitHub API fetch failed (network error), using cache:', err);
-    return getStoredLatest();
+    console.debug('GitHub API fetch failed:', err);
+    return null;
   }
 }
 

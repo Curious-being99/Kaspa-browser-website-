@@ -36,7 +36,7 @@ export const Footer: React.FC<FooterProps> = ({ latestRelease }) => {
             </div>
 
             <p className="text-xs text-gray-400 max-w-sm leading-relaxed">
-              Kaspa Browser is a privacy-first, decentralized Android web browser and Web3 gateway designed to seamlessly bridge standard web browsing with peer-to-peer decentralized technologies and the Kaspa network ecosystem. Built with Kotlin and Jetpack Compose (Material 3).
+              Kaspa Browser is a privacy-first, decentralized Android web browser and Web3 gateway designed for the BlockDAG network. Built with Kotlin and Jetpack Compose.
             </p>
 
             <div className="flex items-center gap-3 pt-2">
@@ -50,11 +50,11 @@ export const Footer: React.FC<FooterProps> = ({ latestRelease }) => {
                 <Github className="w-4 h-4" />
               </a>
               <a
-                href="https://x.com/curiousbeing99"
+                href="https://x.com/KaspaBrowser"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-[#14161C] border border-[#282C37] text-gray-300 hover:text-white hover:border-gray-500 transition-colors"
-                title="X (Twitter)"
+                title="X (@KaspaBrowser)"
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -130,7 +130,7 @@ export const Footer: React.FC<FooterProps> = ({ latestRelease }) => {
           {/* Ecosystem Links */}
           <div className="md:col-span-4 space-y-4">
             <h4 className="text-xs font-bold font-mono text-[#70C7BA] uppercase tracking-wider">
-              Official Ecosystem &amp; $KB Token
+              Official Ecosystem
             </h4>
             <ul className="space-y-2 text-xs font-mono">
 

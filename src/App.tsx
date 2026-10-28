@@ -69,8 +69,8 @@ export default function App() {
     loadGitHubData();
     loadPriceData();
     
-    // GitHub: 5 minutes (to prevent 403 rate limits in "no-express" client-only mode)
-    const githubInterval = setInterval(loadGitHubData, 300000);
+    // Check for new GitHub releases every 60 seconds
+    const githubInterval = setInterval(loadGitHubData, 60000);
     
     // Price: 10 seconds (CoinGecko / Kaspa API have higher limits)
     const priceInterval = setInterval(loadPriceData, 10000);
@@ -133,7 +133,7 @@ export default function App() {
         <FeaturesGrid />
 
         {/* 4. $KB & Si Agent Ecosystem */}
-        <EcosystemSection />
+        <EcosystemSection kaspaStats={kaspaStats} />
 
         {/* 5. Architecture & Technology Specifications */}
         <ArchitectureSection />

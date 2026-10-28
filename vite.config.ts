@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
+import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,6 +14,59 @@ export default defineConfig(() => {
     plugins: [
       react(), 
       tailwindcss(),
+      {
+        name: 'api-handler',
+        configureServer(server) {
+          server.middlewares.use(async (req, res, next) => {
+            if (req.url && req.url.startsWith('/api/')) {
+              const urlObj = new URL(req.url, 'http://localhost:3000');
+              const pathWithoutApi = urlObj.pathname.replace(/^\/api\/?/, '');
+              const pathParts = pathWithoutApi.split('/').filter(Boolean);
+              const baseRoute = pathParts[0] || '';
+              const extraPath = pathParts.slice(1).join('/');
+              const apiPath = path.join(__dirname, 'server-api', `${baseRoute}.ts`);
+              
+              if (fs.existsSync(apiPath)) {
+                try {
+                  const module = await server.ssrLoadModule(`/server-api/${baseRoute}.ts`);
+                  const handler = module.default;
+                  
+                  if (typeof handler === 'function') {
+                    // Populate query params on req object for Vercel/Express handler compatibility
+                    const query: Record<string, string> = {};
+                    urlObj.searchParams.forEach((v, k) => { query[k] = v; });
+                    if (extraPath && !query.path) {
+                      query.path = extraPath;
+                    }
+                    (req as any).query = query;
+
+                    // Inject Vercel/Express-like methods into res
+                    (res as any).status = function(code: number) {
+                      this.statusCode = code;
+                      return this;
+                    };
+                    (res as any).json = function(data: any) {
+                      this.setHeader('Content-Type', 'application/json');
+                      this.end(JSON.stringify(data));
+                      return this;
+                    };
+                    
+                    await handler(req, res);
+                    // Crucially, DO NOT call next() after handler execution
+                    return;
+                  }
+                } catch (e: any) {
+                  console.error('API execution error:', e);
+                  res.statusCode = 500;
+                  res.end(JSON.stringify({ error: e.message }));
+                  return;
+                }
+              }
+            }
+            next();
+          });
+        }
+      },
       VitePWA({
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'logo-square.png', 'kaspa-logo.svg'],
@@ -108,25 +162,6 @@ export default defineConfig(() => {
       strictPort: true,
       hmr: process.env.DISABLE_HMR !== 'true',
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
-      proxy: {
-        '/api/github': {
-          target: 'https://api.github.com',
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api\/github/, '/repos/Curious-being99/Kaspa-browser-'),
-          configure: (proxy, options) => {
-            proxy.on('proxyReq', (proxyReq, req, res) => {
-              proxyReq.setHeader('Accept', 'application/vnd.github.v3+json');
-              proxyReq.setHeader('User-Agent', 'KaspaBrowser-Website');
-              
-              // Use environment variable if available (e.g. from .env file)
-              // Note: process.env in vite.config.ts comes from the shell/env
-              if (process.env.GITHUB_TOKEN) {
-                proxyReq.setHeader('Authorization', `token ${process.env.GITHUB_TOKEN}`);
-              }
-            });
-          }
-        }
-      }
     },
   };
 });

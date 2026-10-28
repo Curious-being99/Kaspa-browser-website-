@@ -13,6 +13,7 @@ import { KaspaLogo } from './KaspaLogo';
 import { GitHubRelease, GitHubRepoMeta } from '../types';
 import { GITHUB_REPO_URL } from '../data/kaspaData';
 import { formatBytes, getPreferredDownloadAsset } from '../services/githubService';
+import { KB_TOKEN_CONTRACT } from '../services/tokenService';
 
 interface HeroSectionProps {
   latestRelease: GitHubRelease | null;
@@ -28,8 +29,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   isDownloading
 }) => {
   const [copiedHash, setCopiedHash] = useState(false);
+  const [copiedContract, setCopiedContract] = useState(false);
   const preferredAsset = latestRelease ? getPreferredDownloadAsset(latestRelease) : null;
-  const shaDigest = preferredAsset?.digest || '';
+  // Dynamically uses the live release SHA from GitHub, falling back to current stable digest
+  const shaDigest = preferredAsset?.digest || '24e7b273dd9a6ada97a0104210386aa55f43e56f45aedbfec57f1f18529bac5d';
+
+  const copyContractToClipboard = async () => {
+      await navigator.clipboard.writeText(KB_TOKEN_CONTRACT);
+      setCopiedContract(true);
+      setTimeout(() => setCopiedContract(false), 2000);
+  };
 
   const copyHashToClipboard = async () => {
     try {
@@ -81,7 +90,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#70C7BA] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#70C7BA]"></span>
               </span>
-              v{latestRelease?.tag_name || '2.1'} Stable Release
+              {latestRelease?.tag_name ? (latestRelease.tag_name.startsWith('v') ? latestRelease.tag_name : `v${latestRelease.tag_name}`) : 'v1.0'} Stable Release
             </div>
 
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tighter text-white leading-[0.9]">
@@ -91,8 +100,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
             <p className="text-lg text-gray-400 max-w-xl leading-relaxed">
               Engineered for speed, privacy, and decentralized connectivity. 
-              KaspaBrowser is your native gateway to the BlockDAG ecosystem, 
-              featuring $KB utility integration and Si Agent automation.
+              KaspaBrowser is your native gateway to the BlockDAG ecosystem.
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
@@ -118,6 +126,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <span>View on GitHub</span>
                 <ChevronRight className="w-5 h-5 opacity-50" />
               </a>
+            </div>
+
+            <div className="flex items-center gap-3 text-xs font-mono text-gray-500">
+                <span className="text-[#70C7BA]">Contract:</span>
+                <button
+                  onClick={copyContractToClipboard}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:border-[#70C7BA]/40 transition-colors"
+                >
+                  <span className="truncate max-w-[300px]">{KB_TOKEN_CONTRACT}</span>
+                  <Copy className="w-3.5 h-3.5" />
+                </button>
             </div>
 
             {/* SHA Verification */}
@@ -151,8 +170,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                       <KaspaLogo className="w-6 h-6" />
                     </div>
                     <div>
-                      <div className="text-sm font-bold text-white">KaspaBrowser v2.1</div>
-                      <div className="text-[10px] text-gray-500 font-mono">Build: 2026.09.18-SIGNED</div>
+                      <div className="text-sm font-bold text-white">KaspaBrowser {latestRelease?.tag_name || 'v1.0'}</div>
+                      <div className="text-[10px] text-gray-500 font-mono">Build: {latestRelease?.published_at ? new Date(latestRelease.published_at).toISOString().split('T')[0] : 'SIGNED'}</div>
                     </div>
                   </div>
                   <div className="px-2 py-1 rounded-md bg-[#70C7BA]/10 text-[#70C7BA] text-[10px] font-bold">STABLE</div>
@@ -160,7 +179,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
                 <div className="space-y-4">
                   {[
-                    { label: 'Network', value: 'BlockDAG Mainnet' },
+                    { label: 'Network', value: 'BlockDAG' },
                     { label: 'Security', value: 'SHA-256 Verified' },
                     { label: 'Core', value: 'Kotlin 2.0 Native' },
                     { label: 'Features', value: '$KB + Si Agent' }

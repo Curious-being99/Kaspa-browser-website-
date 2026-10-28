@@ -2,9 +2,9 @@
 
 @layer base {
   html, body {
-    background-color: #0C0D10;
-    color: #F3F4F6;
-    color-scheme: dark;
+    background-color: #0C0D10 !important;
+    color: #F3F4F6 !important;
+    color-scheme: dark !important;
   }
   body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;

@@ -1,8 +1,12 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const { path: githubPath, ...otherQueries } = req.query;
-  const subPath = Array.isArray(githubPath) ? githubPath.join('/') : (githubPath || 'releases/latest');
+  console.log('DEBUG: github handler executing');
+  const query = req.query || {};
+  const { path: githubPath, ...otherQueries } = query as any;
+  const subPath = Array.isArray(githubPath) 
+    ? githubPath.join('/') 
+    : (typeof githubPath === 'string' ? githubPath : 'releases/latest');
   
   // Reconstruct query string
   const queryParams = new URLSearchParams();
@@ -17,7 +21,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const queryString = queryParams.toString();
-  const url = `https://api.github.com/repos/Curious-being99/Kaspa-browser-/${subPath}${queryString ? `?${queryString}` : ''}`;
+  const repoBase = 'https://api.github.com/repos/Curious-being99/Kaspa-browser-';
+  const url = `${repoBase}${subPath ? `/${subPath}` : ''}${queryString ? `?${queryString}` : ''}`;
 
   try {
     const headers: Record<string, string> = {
@@ -41,8 +46,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const data = await response.json();
     
-    // Add cache headers to help with rate limiting and performance
-    res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
+    // Disable caching entirely so latest release is always immediate and fresh
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
     return res.status(200).json(data);
   } catch (error: any) {
     console.error('GitHub Proxy Error:', error);
