@@ -66,9 +66,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       {/* Background Media */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="/assets/images/kaspa_browser_hero_1793041320223.jpg" 
-          alt="Kaspa Browser Visualization"
-          className="w-full h-full object-cover opacity-30"
+          src="/src/assets/images/kaspa_blockdag_hero_background_1793176557783.jpg" 
+          alt="Kaspa BlockDAG Network Visualization"
+          className="w-full h-full object-cover opacity-25"
           referrerPolicy="no-referrer"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0C0D10] via-transparent to-[#0C0D10]" />
