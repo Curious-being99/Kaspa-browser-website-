@@ -36,7 +36,7 @@ export const Footer: React.FC<FooterProps> = ({ latestRelease }) => {
             </div>
 
             <p className="text-xs text-gray-400 max-w-sm leading-relaxed">
-              Kaspa Browser is a privacy-first, decentralized Android web browser and Web3 gateway designed for the BlockDAG network. Built with Kotlin and Jetpack Compose.
+              Kaspa Browser is a privacy-first, decentralized Android web browser and Web3 gateway designed for the BlockDAG network, featuring $KB as its meme utility token. Built with Kotlin and Jetpack Compose.
             </p>
 
             <div className="flex items-center gap-3 pt-2">

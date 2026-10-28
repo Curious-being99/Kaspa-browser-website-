@@ -13,7 +13,8 @@ import {
   Globe2, 
   Radio, 
   Sparkles,
-  GitPullRequest
+  GitPullRequest,
+  Coins
 } from 'lucide-react';
 import { GITHUB_REPO_URL, GITHUB_RELEASES_URL } from '../data/kaspaData';
 import { GitHubRelease } from '../types';
@@ -38,9 +39,6 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             Privacy-First, Decentralized Android Web Browser &amp; Web3 Gateway
           </h2>
-          <p className="text-sm sm:text-base text-gray-400 leading-relaxed">
-            Kaspa Browser is a privacy-first, decentralized Android web browser and Web3 gateway designed to seamlessly bridge standard web browsing with peer-to-peer decentralized technologies and the Kaspa network ecosystem.
-          </p>
         </div>
 
         {/* 2-Column Content: Mission / Narrative + Key Functionalities */}
@@ -54,7 +52,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                 <span>What is KaspaBrowser?</span>
               </h3>
               <p className="text-sm text-gray-300 leading-relaxed">
-                <strong>Kaspa Browser</strong> is a privacy-first, decentralized Android web browser and Web3 gateway designed for the BlockDAG network.
+                <strong>Kaspa Browser</strong> is a privacy-first, decentralized Android web browser and Web3 gateway designed for the BlockDAG network, featuring <strong>$KB</strong> as its meme utility token.
               </p>
               <p className="text-sm text-gray-300 leading-relaxed">
                 Built with <strong>Kotlin</strong> and <strong>Jetpack Compose</strong>, it unifies standard web browsing with high-performance decentralized connectivity into a fast, privacy-first mobile client.
@@ -144,6 +142,16 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                 <h4 className="text-sm font-bold text-white mb-1">Privacy &amp; Security Shield</h4>
                 <p className="text-xs text-gray-400 leading-relaxed">
                   HTTPS-only enforcement, live tracker interception, FIDO2 biometric passkeys, and one-tap Room DB purge.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-[#14161C] border border-[#282C37] hover:border-[#70C7BA]/40 transition-colors">
+                <div className="w-8 h-8 rounded-lg bg-[#0C0D10] border border-[#282C37] flex items-center justify-center text-[#70C7BA] mb-2.5">
+                  <Coins className="w-4 h-4" />
+                </div>
+                <h4 className="text-sm font-bold text-white mb-1">$KB Meme Utility Token</h4>
+                <p className="text-xs text-gray-400 leading-relaxed">
+                  Native meme utility token for KaspaBrowser on the Kaspa BlockDAG network.
                 </p>
               </div>
 

@@ -35,17 +35,17 @@ export const EcosystemSection: React.FC<EcosystemSectionProps> = ({ kaspaStats }
     let isMounted = true;
     let timerId: ReturnType<typeof setTimeout>;
 
-    // Real-time streaming loop (every 4 seconds, within the requested 3-5s window)
+    // Real-time streaming loop (every 3 seconds)
     const streamCycle = async () => {
       await loadTokenData(false);
       if (isMounted) {
-        timerId = setTimeout(streamCycle, 4000);
+        timerId = setTimeout(streamCycle, 3000);
       }
     };
 
     // Initial fetch with spinner
     loadTokenData(true);
-    timerId = setTimeout(streamCycle, 4000);
+    timerId = setTimeout(streamCycle, 3000);
 
     return () => {
       isMounted = false;
@@ -56,7 +56,6 @@ export const EcosystemSection: React.FC<EcosystemSectionProps> = ({ kaspaStats }
   const handleKasChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKasInput(e.target.value);
   };
-
 
   const kasAmount = parseFloat(kasInput) || 0;
   
@@ -98,8 +97,9 @@ export const EcosystemSection: React.FC<EcosystemSectionProps> = ({ kaspaStats }
                     )}
                   </div>
                   <div className="min-w-0">
-                    <h3 className="text-xl sm:text-2xl font-bold text-white truncate">$KB</h3>
-                    <div className="text-[#70C7BA] text-xs font-mono mt-1 flex items-center gap-2">
+                    <h3 className="text-xl sm:text-2xl font-bold text-white truncate">$KB Token</h3>
+                    <div className="text-[#70C7BA] text-xs font-mono mt-0.5 flex items-center gap-1.5">
+                      <span>On-Chain BlockDAG</span>
                     </div>
                   </div>
                 </div>
@@ -109,45 +109,74 @@ export const EcosystemSection: React.FC<EcosystemSectionProps> = ({ kaspaStats }
                     onClick={() => loadTokenData(true)}
                     disabled={isLoadingToken}
                     className="p-2 rounded-xl bg-white/5 text-gray-400 hover:text-[#70C7BA] hover:bg-white/10 transition-all cursor-pointer disabled:opacity-50"
+                    title="Force Refresh Live Stream"
                   >
                     <RefreshCw className={`w-4 h-4 ${isLoadingToken ? 'animate-spin text-[#70C7BA]' : ''}`} />
                   </button>
-                  <div className="px-3 py-1 rounded-full bg-[#70C7BA]/10 text-[#70C7BA] text-[10px] sm:text-xs font-mono font-bold flex items-center gap-1.5 shrink-0">
-                    <Activity className="w-3 h-3 animate-pulse text-[#70C7BA]" />
-                    LIVE STREAM (4s)
+                  <div className="px-3 py-1.5 rounded-full bg-[#70C7BA]/10 text-[#70C7BA] text-[10px] sm:text-xs font-mono font-bold flex items-center gap-1.5 shrink-0 border border-[#70C7BA]/20">
+                    <Activity className="w-3.5 h-3.5 animate-pulse text-[#70C7BA]" />
+                    <span>LIVE STREAM (3s)</span>
                   </div>
                 </div>
               </div>
+
+              {/* Token Description */}
+              <p className="text-xs sm:text-sm text-gray-300 mb-5 leading-relaxed">
+                <span className="font-semibold text-white">$KB (Kaspabrowser Token)</span> is a meme utility token for KaspaBrowser on the Kaspa BlockDAG network.
+              </p>
               
-              {/* REAL-TIME Telemetry */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 mb-6 p-3 sm:p-4 rounded-2xl bg-[#0C0D10] border border-white/5 font-mono overflow-hidden">
-                <div className="min-w-0">
-                  <div className="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-wider truncate">Price (KAS)</div>
-                  <div className="text-[#70C7BA] font-bold text-sm sm:text-base mt-1 truncate" title={tokenStats ? `${tokenStats.priceNative} KAS` : ''}>
-                    {tokenStats ? `${tokenStats.priceNative < 0.001 ? tokenStats.priceNative.toFixed(8) : tokenStats.priceNative.toFixed(6)} KAS` : '---'}
-                  </div>
-                </div>
-                <div className="min-w-0">
-                  <div className="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-wider truncate">Rate (KB/KAS)</div>
-                  <div className="text-white font-bold text-sm sm:text-base mt-1 truncate">
-                    {tokenStats && tokenStats.kbPerKas > 0 ? `${tokenStats.kbPerKas.toLocaleString(undefined, { maximumFractionDigits: 2 })} KB` : '---'}
-                  </div>
-                </div>
-                <div className="min-w-0">
+              {/* REAL-TIME Telemetry Grid (Pure On-Chain Metrics) */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3 mb-6 p-3 sm:p-4 rounded-2xl bg-[#0C0D10] border border-white/5 font-mono overflow-hidden">
+                {/* 1. Price USD */}
+                <div className="min-w-0 p-2 sm:p-2.5 rounded-xl bg-white/[0.02]">
                   <div className="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-wider truncate">Price (USD)</div>
-                  <div className="text-white font-bold text-sm sm:text-base mt-1 truncate" title={tokenStats ? `$${tokenStats.priceUsd}` : ''}>
+                  <div className="text-white font-bold text-sm sm:text-base mt-0.5 truncate" title={tokenStats ? `$${tokenStats.priceUsd}` : ''}>
                     {tokenStats ? `$${tokenStats.priceUsd < 0.0001 ? tokenStats.priceUsd.toFixed(8) : tokenStats.priceUsd.toFixed(6)}` : '---'}
                   </div>
                 </div>
-                <div className="min-w-0">
+
+                {/* 2. Price KAS */}
+                <div className="min-w-0 p-2 sm:p-2.5 rounded-xl bg-white/[0.02]">
+                  <div className="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-wider truncate">Price (KAS)</div>
+                  <div className="text-[#70C7BA] font-bold text-sm sm:text-base mt-0.5 truncate" title={tokenStats ? `${tokenStats.priceNative} KAS` : ''}>
+                    {tokenStats ? `${tokenStats.priceNative < 0.001 ? tokenStats.priceNative.toFixed(8) : tokenStats.priceNative.toFixed(6)} KAS` : '---'}
+                  </div>
+                </div>
+
+                {/* 3. Rate KB/KAS */}
+                <div className="min-w-0 p-2 sm:p-2.5 rounded-xl bg-white/[0.02]">
+                  <div className="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-wider truncate">Rate (KB/KAS)</div>
+                  <div className="text-white font-bold text-sm sm:text-base mt-0.5 truncate">
+                    {tokenStats && tokenStats.kbPerKas > 0 ? `${tokenStats.kbPerKas.toLocaleString(undefined, { maximumFractionDigits: 2 })} KB` : '---'}
+                  </div>
+                </div>
+
+                {/* 4. 24h Change */}
+                <div className="min-w-0 p-2 sm:p-2.5 rounded-xl bg-white/[0.02]">
                   <div className="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-wider truncate">24h Change</div>
-                  <div className={`font-bold text-sm sm:text-base mt-1 flex items-center gap-1 truncate ${tokenStats && tokenStats.priceChange24h >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                  <div className={`font-bold text-sm sm:text-base mt-0.5 flex items-center gap-1 truncate ${tokenStats && tokenStats.priceChange24h >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
                     {tokenStats ? (
                       <>
                         {tokenStats.priceChange24h >= 0 ? <TrendingUp className="w-3.5 h-3.5 shrink-0" /> : <TrendingDown className="w-3.5 h-3.5 shrink-0" />}
                         <span className="truncate">{`${tokenStats.priceChange24h >= 0 ? '+' : ''}${tokenStats.priceChange24h.toFixed(2)}%`}</span>
                       </>
                     ) : '---'}
+                  </div>
+                </div>
+
+                {/* 5. 24h Volume USD */}
+                <div className="min-w-0 p-2 sm:p-2.5 rounded-xl bg-white/[0.02]">
+                  <div className="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-wider truncate">24h Vol (USD)</div>
+                  <div className="text-[#70C7BA] font-bold text-sm sm:text-base mt-0.5 truncate">
+                    {tokenStats ? `$${tokenStats.volume24h.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : '---'}
+                  </div>
+                </div>
+
+                {/* 6. 24h Volume KAS */}
+                <div className="min-w-0 p-2 sm:p-2.5 rounded-xl bg-white/[0.02]">
+                  <div className="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-wider truncate">24h Vol (KAS)</div>
+                  <div className="text-white font-bold text-sm sm:text-base mt-0.5 truncate">
+                    {tokenStats && typeof tokenStats.volume24hKas === 'number' ? `${tokenStats.volume24hKas.toLocaleString(undefined, { maximumFractionDigits: 1 })} KAS` : '---'}
                   </div>
                 </div>
               </div>
