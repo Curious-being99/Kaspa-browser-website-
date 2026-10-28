@@ -64,7 +64,7 @@ function storeLatest(release: GitHubRelease) {
  */
 export async function fetchLatestRelease(): Promise<GitHubRelease | null> {
   try {
-    const response = await fetch(`${GITHUB_API_BASE}/releases/latest?_t=${Date.now()}`, {
+    const response = await fetch(`${GITHUB_API_BASE}?path=releases/latest&_t=${Date.now()}`, {
       method: 'GET',
       cache: 'no-store',
       headers: { 
@@ -73,38 +73,61 @@ export async function fetchLatestRelease(): Promise<GitHubRelease | null> {
       }
     });
 
-    if (response.ok) {
+    if (response.ok && (response.headers.get('content-type') || '').includes('json')) {
       const latest: GitHubRelease = await response.json();
       if (latest && latest.tag_name) {
         return latest;
       }
     }
-
-    return null;
   } catch (err) {
-    console.debug('GitHub API fetch failed:', err);
-    return null;
+    console.debug('Server API /api/github failed, attempting direct GitHub fetch:', err);
   }
+
+  // Direct client-side fallback
+  try {
+    const directRes = await fetch(`https://api.github.com/repos/Curious-being99/Kaspa-browser-/releases/latest?_t=${Date.now()}`, {
+      headers: { 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (directRes.ok) {
+      const latest: GitHubRelease = await directRes.json();
+      if (latest && latest.tag_name) return latest;
+    }
+  } catch (e) {
+    console.error('Direct GitHub release fetch failed:', e);
+  }
+
+  return null;
 }
 
 export async function fetchRepoMetadata(): Promise<GitHubRepoMeta> {
   try {
-    const response = await fetch(GITHUB_API_BASE, {
+    const response = await fetch(`${GITHUB_API_BASE}?path=&_t=${Date.now()}`, {
       headers: {
         'Accept': 'application/vnd.github.v3+json'
       }
     });
 
-    if (response.status === 403 || !response.ok) {
-       return FALLBACK_REPO_META;
+    if (response.ok && (response.headers.get('content-type') || '').includes('json')) {
+      const data: GitHubRepoMeta = await response.json();
+      if (data && data.name) return data;
     }
-
-    const data: GitHubRepoMeta = await response.json();
-    return data;
   } catch (err) {
-    console.debug('GitHub API repo metadata fetch failed, using fallback:', err);
-    return FALLBACK_REPO_META;
+    console.debug('Server API /api/github meta fetch failed, using direct fallback:', err);
   }
+
+  try {
+    const directRes = await fetch('https://api.github.com/repos/Curious-being99/Kaspa-browser-', {
+      headers: { 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (directRes.ok) {
+      const data: GitHubRepoMeta = await directRes.json();
+      if (data && data.name) return data;
+    }
+  } catch (e) {
+    // Ignore
+  }
+
+  return FALLBACK_REPO_META;
 }
 
 export function formatBytes(bytes: number, decimals = 1): string {

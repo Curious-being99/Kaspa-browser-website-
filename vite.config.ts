@@ -24,11 +24,14 @@ export default defineConfig(() => {
               const pathParts = pathWithoutApi.split('/').filter(Boolean);
               const baseRoute = pathParts[0] || '';
               const extraPath = pathParts.slice(1).join('/');
-              const apiPath = path.join(__dirname, 'server-api', `${baseRoute}.ts`);
+              const apiPath = path.join(__dirname, 'api', `${baseRoute}.ts`);
+              const serverApiPath = path.join(__dirname, 'server-api', `${baseRoute}.ts`);
+              const exists = fs.existsSync(apiPath) || fs.existsSync(serverApiPath);
+              const modulePath = fs.existsSync(apiPath) ? `/api/${baseRoute}.ts` : `/server-api/${baseRoute}.ts`;
               
-              if (fs.existsSync(apiPath)) {
+              if (exists) {
                 try {
-                  const module = await server.ssrLoadModule(`/server-api/${baseRoute}.ts`);
+                  const module = await server.ssrLoadModule(modulePath);
                   const handler = module.default;
                   
                   if (typeof handler === 'function') {
