@@ -84,7 +84,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       baseToken: {
         name: tokenRes.token?.claimed_name || 'Kaspabrowser',
         symbol: tokenRes.token?.claimed_ticker || 'KB',
-        imageUrl: tokenRes.token?.claimed_image || 'https://storage.googleapis.com/kaspa-rocket-prod-uploads/7c70c6f4-faa9-4d84-ba81-62553168f1a9.png'
+        imageUrl: '/logo-square.png'
       },
       source: 'kascov.io',
       success: true,

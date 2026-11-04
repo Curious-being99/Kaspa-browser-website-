@@ -84,17 +84,8 @@ export const EcosystemSection: React.FC<EcosystemSectionProps> = ({ kaspaStats }
             <div>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-2xl overflow-hidden shadow-md">
-                    {tokenStats?.imageUrl && !imageError ? (
-                      <img 
-                        src={tokenStats.imageUrl} 
-                        alt="$KB Token" 
-                        className="w-full h-full object-cover"
-                        onError={() => setImageError(true)}
-                      />
-                    ) : (
-                      <KaspaLogo className="w-full h-full" />
-                    )}
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-2xl overflow-hidden shadow-md bg-[#0C0D10] border border-white/10">
+                    <KaspaLogo className="w-full h-full" alt="$KB Token" />
                   </div>
                   <div className="min-w-0">
                     <h3 className="text-xl sm:text-2xl font-bold text-white truncate">$KB Token</h3>

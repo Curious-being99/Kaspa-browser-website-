@@ -59,7 +59,7 @@ async function fetchDirectFromKascov(): Promise<TokenStats | null> {
       volume24h: Number(volume24hUsd.toFixed(2)),
       volume24hKas: Number(volume24hKas.toFixed(2)),
       fdv: Number(fdv.toFixed(2)),
-      imageUrl: tokenRes.token?.claimed_image || 'https://storage.googleapis.com/kaspa-rocket-prod-uploads/7c70c6f4-faa9-4d84-ba81-62553168f1a9.png',
+      imageUrl: '/logo-square.png',
       name: tokenRes.token?.claimed_name || 'Kaspabrowser',
       symbol: tokenRes.token?.claimed_ticker || 'KB',
       success: true
