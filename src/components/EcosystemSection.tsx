@@ -23,8 +23,9 @@ export const EcosystemSection: React.FC<EcosystemSectionProps> = ({ kaspaStats }
       if (stats) {
         setTokenStats(stats);
         setError(null);
-      } else if (!tokenStats) {
-        setError("Waiting for live data...");
+      } else {
+        setTokenStats(null);
+        setError("Live market data is temporarily unavailable.");
       }
     } finally {
       if (showSpinner) setIsLoadingToken(false);
@@ -195,7 +196,7 @@ export const EcosystemSection: React.FC<EcosystemSectionProps> = ({ kaspaStats }
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-400">Receive Estimate:</span>
                     <span className="text-[#70C7BA] font-bold font-mono text-base truncate">
-                      {estimatedKbOutput > 0 ? estimatedKbOutput.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '0.00'} $KB
+                      {tokenStats && estimatedKbOutput > 0 ? estimatedKbOutput.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 'Unavailable'} $KB
                     </span>
                   </div>
                 </div>
