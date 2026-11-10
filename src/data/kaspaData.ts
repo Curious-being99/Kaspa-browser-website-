@@ -88,7 +88,7 @@ export const FAQS = [
   },
   {
     q: 'What is KaspaBrowser and what are its core features?',
-    a: 'Kaspa Browser is a privacy-first, decentralized Android web browser with $KB as a meme utility token on the Kaspa BlockDAG network.'
+    a: 'Kaspa Browser is a privacy-first, decentralized Android web browser with $KB as a community token on the Kaspa BlockDAG network.'
   },
   {
     q: 'What makes KaspaBrowser unique for decentralized browsing?',
@@ -108,7 +108,7 @@ export const FAQS = [
   },
   {
     q: 'What utility does the $KB Token and Si Agent Command provide?',
-    a: '$KB is a meme utility token for KaspaBrowser on Kaspa BlockDAG. The Si Agent Command provides advanced support for managing wallet live activities and streamlining decentralized transactions within the browser.'
+    a: '$KB is a community token for KaspaBrowser on Kaspa BlockDAG. The Si Agent Command provides advanced support for managing wallet live activities and streamlining decentralized transactions within the browser.'
   }
 ];
 
