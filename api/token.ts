@@ -1,101 +1,97 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-// In-memory cache for USD oracle (refreshed every 30s) to keep 3-5s stream lightning fast
+const TOKEN_ADDRESS = 'b75a6e90f569965bdeec23c460ebd59e0f0445d8aa8f5d4330fe15c66a47b4d8';
 let cachedKasUsd: number | null = null;
 let lastKasUsdFetch = 0;
 
-async function getKasUsd(): Promise<number> {
-  const now = Date.now();
-  if (cachedKasUsd !== null && now - lastKasUsdFetch < 30000) {
-    return cachedKasUsd;
-  }
+async function getKasUsd(): Promise<number | null> {
+  if (cachedKasUsd !== null && Date.now() - lastKasUsdFetch < 30000) return cachedKasUsd;
   try {
-    const res = await fetch('https://kascov.io/data/price.json');
-    const data = await res.json();
-    cachedKasUsd = Number(data.kas_usd) || 0.0357;
-    lastKasUsdFetch = now;
-    return cachedKasUsd;
+    const response = await fetch('https://kascov.io/data/price.json', { cache: 'no-store' });
+    if (!response.ok) return null;
+    const data = await response.json();
+    const value = Number(data?.kas_usd);
+    if (!Number.isFinite(value) || value <= 0) return null;
+    cachedKasUsd = value;
+    lastKasUsdFetch = Date.now();
+    return value;
   } catch {
-    return cachedKasUsd || 0.0357;
+    return null;
   }
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const tokenAddress = 'b75a6e90f569965bdeec23c460ebd59e0f0445d8aa8f5d4330fe15c66a47b4d8';
-  const KASCOV_TOKEN_URL = `https://kascov.io/data/mainnet/token/${tokenAddress}.json`;
+function finiteNumber(value: unknown): number | null {
+  const parsed = typeof value === 'number' ? value : Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
 
-  // Helper for consistent CORS & zero-cache streaming headers
-  const setHeaders = (r: VercelResponse) => {
-    r.setHeader('Access-Control-Allow-Origin', '*');
-    r.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    r.setHeader('Content-Type', 'application/json');
-  };
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+  res.setHeader('Content-Type', 'application/json');
+
+  if (req.method !== 'GET') return res.status(405).json({ success: false, error: 'Method not allowed' });
 
   try {
-    const [tokenRes, kasUsd] = await Promise.all([
-      fetch(`${KASCOV_TOKEN_URL}?_t=${Date.now()}`).then(r => {
-        if (!r.ok) throw new Error(`Kascov API responded with status ${r.status}`);
-        return r.json();
-      }),
+    const [tokenResponse, kasUsd] = await Promise.all([
+      fetch(`https://kascov.io/data/mainnet/token/${TOKEN_ADDRESS}.json`, { cache: 'no-store' }),
       getKasUsd()
     ]);
-
-    // Calculate spot price in Sompi directly from on-chain market data
-    let spotSompi = 0;
-    if (tokenRes.market?.spot_num_sompi && tokenRes.market?.spot_den) {
-      spotSompi = tokenRes.market.spot_num_sompi / tokenRes.market.spot_den;
-    } else if (tokenRes.trades && tokenRes.trades.length > 0) {
-      const latestTrade = tokenRes.trades[0];
-      spotSompi = Number(latestTrade.quote_sompi) / Number(latestTrade.base_amount || 1);
-    } else {
-      spotSompi = 18415.26;
+    if (!tokenResponse.ok || kasUsd === null) {
+      return res.status(503).json({ success: false, error: 'Live token market data is temporarily unavailable' });
     }
 
-    // KaspaRocket official display conversion: 1 display $KB = 1,000 on-chain base units (RAW_PER_TOKEN = 1000)
-    // priceKasPerDisplayUnit = (spotSompi * RAW_PER_TOKEN) / 1e8
-    const RAW_PER_TOKEN = 1000;
-    const priceNative = (spotSompi * RAW_PER_TOKEN) / 1e8; // KAS per $KB (e.g. ~0.184153 KAS)
-    const kbPerKas = priceNative > 0 ? 1 / priceNative : 0; // $KB per 1 KAS (e.g. ~5.43 KB per 1 KAS)
-    const priceUsd = priceNative * kasUsd; // USD per $KB (e.g. ~$0.00657)
-
-    // 24h metrics from Kascov
-    // change_24h_bps: basis points (-301 bps = -3.01%)
-    const priceChange24h = typeof tokenRes.market?.change_24h_bps === 'number'
-      ? tokenRes.market.change_24h_bps / 100
+    const tokenData = await tokenResponse.json();
+    const numerator = finiteNumber(tokenData?.market?.spot_num_sompi);
+    const denominator = finiteNumber(tokenData?.market?.spot_den);
+    let spotSompi = numerator !== null && denominator !== null && denominator > 0
+      ? numerator / denominator
       : 0;
 
-    const volume24hKas = typeof tokenRes.market?.volume_24h_sompi === 'number'
-      ? tokenRes.market.volume_24h_sompi / 1e8
-      : 0;
-    const volume24hUsd = volume24hKas * kasUsd;
+    if (!(spotSompi > 0) && Array.isArray(tokenData?.trades) && tokenData.trades.length > 0) {
+      const trade = tokenData.trades[0];
+      const quoteSompi = finiteNumber(trade?.quote_sompi);
+      const baseAmount = finiteNumber(trade?.base_amount);
+      if (quoteSompi !== null && baseAmount !== null && baseAmount > 0) {
+        spotSompi = quoteSompi / baseAmount;
+      }
+    }
 
-    const totalSupply = Number(tokenRes.token?.supply) || 1000000000;
-    const displaySupply = totalSupply / RAW_PER_TOKEN; // 1,000,000 display KB tokens
-    const fdv = displaySupply * priceUsd;
+    const supply = finiteNumber(tokenData?.token?.supply);
+    if (!Number.isFinite(spotSompi) || spotSompi <= 0 || supply === null || supply <= 0) {
+      return res.status(503).json({ success: false, error: 'Live token market data is incomplete' });
+    }
 
-    const responseData = {
-      priceUsd: priceUsd.toFixed(8),
-      priceNative: priceNative.toFixed(8),
-      kbPerKas: Number(kbPerKas.toFixed(2)),
-      priceChange24h: Number(priceChange24h.toFixed(2)),
-      volume24h: Number(volume24hUsd.toFixed(2)),
-      volume24hKas: Number(volume24hKas.toFixed(2)),
-      fdv: Number(fdv.toFixed(2)),
+    const rawUnitsPerDisplayToken = 1000;
+    const priceNative = (spotSompi * rawUnitsPerDisplayToken) / 1e8;
+    const priceUsd = priceNative * kasUsd;
+    if (!Number.isFinite(priceNative) || priceNative <= 0 || !Number.isFinite(priceUsd) || priceUsd <= 0) {
+      return res.status(503).json({ success: false, error: 'Live token price is invalid' });
+    }
+
+    const changeBps = finiteNumber(tokenData?.market?.change_24h_bps);
+    const volumeSompi = finiteNumber(tokenData?.market?.volume_24h_sompi) ?? 0;
+    const volume24hKas = volumeSompi / 1e8;
+    const displaySupply = supply / rawUnitsPerDisplayToken;
+
+    return res.status(200).json({
+      priceUsd,
+      priceNative,
+      kbPerKas: 1 / priceNative,
+      priceChange24h: changeBps === null ? 0 : changeBps / 100,
+      volume24h: volume24hKas * kasUsd,
+      volume24hKas,
+      fdv: displaySupply * priceUsd,
       baseToken: {
-        name: tokenRes.token?.claimed_name || 'Kaspabrowser',
-        symbol: tokenRes.token?.claimed_ticker || 'KB',
+        name: tokenData.token?.claimed_name || 'Kaspabrowser',
+        symbol: tokenData.token?.claimed_ticker || 'KB',
         imageUrl: '/logo-square.png'
       },
       source: 'kascov.io',
       success: true,
       timestamp: Date.now()
-    };
-
-    setHeaders(res);
-    return res.status(200).json(responseData);
-  } catch (error: any) {
+    });
+  } catch (error) {
     console.error('Kascov Token API Error:', error);
-    setHeaders(res);
-    return res.status(500).json({ error: error.message, success: false });
+    return res.status(503).json({ success: false, error: 'Live token market data is temporarily unavailable' });
   }
 }
