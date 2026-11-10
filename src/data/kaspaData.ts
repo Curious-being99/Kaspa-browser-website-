@@ -84,7 +84,7 @@ export const TECH_SPECS = [
 export const FAQS = [
   {
     q: 'How do I ensure the website always shows the latest update?',
-    a: 'The website automatically checks for new software releases and updates in real time. You will always see and download the most up-to-date stable release directly from the site.'
+    a: 'The website checks the latest published release. A direct download is offered only when the release contains the exact signed APK asset; otherwise, the official releases page is opened.'
   },
   {
     q: 'What is KaspaBrowser and what are its core features?',
@@ -96,7 +96,7 @@ export const FAQS = [
   },
   {
     q: 'How does the download button work?',
-    a: 'Clicking the download button directly fetches the official signed APK (KaspaBrowser-release-signed.apk) compiled by GitHub Actions CI/CD from the official repository releases stream.'
+    a: 'The download button uses the exact KaspaBrowser-release-signed.apk asset from the latest official release. If that asset is missing, it opens the official releases page instead of guessing a download URL.'
   },
   {
     q: 'How do I install the signed APK on Android?',
