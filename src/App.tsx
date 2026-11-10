@@ -58,7 +58,7 @@ export default function App() {
       try {
         const stats = await fetchLiveKaspaStats();
         if (!isMounted) return;
-        if (stats) setKaspaStats(stats);
+        setKaspaStats(stats);
       } catch (err) {
         console.warn('Price data refresh failed:', err);
       }
