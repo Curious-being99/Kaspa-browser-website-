@@ -1,26 +1,10 @@
-import { GitHubRelease, GitHubRepoMeta, FeatureItem } from '../types';
+import { GitHubRelease, FeatureItem } from '../types';
 
 export const GITHUB_REPO_URL = 'https://github.com/Curious-being99/Kaspa-browser-';
 export const GITHUB_RELEASES_URL = 'https://github.com/Curious-being99/Kaspa-browser-/releases';
 export const GITHUB_API_BASE = '/api/github';
 
 
-
-export const FALLBACK_REPO_META: GitHubRepoMeta = {
-  name: 'Kaspa-browser-',
-  full_name: 'Curious-being99/Kaspa-browser-',
-  description: 'Kaspa Browser is a privacy-first, decentralized Android web browser and Web3 gateway designed to seamlessly bridge standard web browsing with peer-to-peer decentralized technologies and the Kaspa network ecosystem, featuring $KB as its meme utility token. Built with Kotlin and Jetpack Compose (Material 3), it unifies standard web browsing, decentralized peer-to-peer mesh discovery, cryptographic identity management, on-device local node hosting, and high-performance Web3 browsing into a fast, privacy-first mobile client.',
-  stargazers_count: 28,
-  forks_count: 6,
-  open_issues_count: 0,
-  updated_at: '2026-09-18T12:33:40Z',
-  license: {
-    name: 'Apache License 2.0',
-    spdx_id: 'Apache-2.0',
-    url: 'https://api.github.com/licenses/apache-2.0'
-  },
-  html_url: GITHUB_REPO_URL
-};
 
 export const FEATURES: FeatureItem[] = [
   {
