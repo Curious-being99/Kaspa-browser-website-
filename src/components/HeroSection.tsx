@@ -32,8 +32,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const [copiedHash, setCopiedHash] = useState(false);
   const [copiedContract, setCopiedContract] = useState(false);
   const preferredAsset = latestRelease ? getPreferredDownloadAsset(latestRelease) : null;
-  // Dynamically uses the live release SHA from GitHub, falling back to current stable digest
-  const shaDigest = preferredAsset?.digest || '24e7b273dd9a6ada97a0104210386aa55f43e56f45aedbfec57f1f18529bac5d';
+  const shaDigest = preferredAsset?.digest || null;
 
   const copyContractToClipboard = async () => {
       await navigator.clipboard.writeText(KB_TOKEN_CONTRACT);
@@ -42,6 +41,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   };
 
   const copyHashToClipboard = async () => {
+    if (!shaDigest) return;
     try {
       await navigator.clipboard.writeText(shaDigest);
       setCopiedHash(true);
@@ -91,7 +91,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#70C7BA] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#70C7BA]"></span>
               </span>
-              {latestRelease?.tag_name ? (latestRelease.tag_name.startsWith('v') ? latestRelease.tag_name : `v${latestRelease.tag_name}`) : 'v1.0'} Stable Release
+              {latestRelease?.tag_name ? (latestRelease.tag_name.startsWith('v') ? latestRelease.tag_name : `v${latestRelease.tag_name}`) : 'Release information unavailable'}
             </div>
 
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tighter text-white leading-[0.9]">
@@ -100,7 +100,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </h1>
 
             <p className="text-lg text-gray-400 max-w-xl leading-relaxed">
-              Engineered for speed, privacy, and decentralized connectivity. KaspaBrowser is your native gateway to the Kaspa BlockDAG ecosystem, with $KB — the meme-born utility token of the KaspaBrowser ecosystem.
+              Engineered for speed, privacy, and decentralized connectivity. KaspaBrowser is your native gateway to the Kaspa BlockDAG ecosystem, with $KB, a community token on Kaspa.
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
@@ -171,16 +171,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     </div>
                     <div>
                       <div className="text-sm font-bold text-white">KaspaBrowser {latestRelease?.tag_name || 'v1.0'}</div>
-                      <div className="text-[10px] text-gray-500 font-mono">Build: {latestRelease?.published_at ? new Date(latestRelease.published_at).toISOString().split('T')[0] : 'SIGNED'}</div>
+                      <div className="text-[10px] text-gray-500 font-mono">Build: {latestRelease?.published_at ? new Date(latestRelease.published_at).toISOString().split('T')[0] : 'DATE UNAVAILABLE'}</div>
                     </div>
                   </div>
-                  <div className="px-2 py-1 rounded-md bg-[#70C7BA]/10 text-[#70C7BA] text-[10px] font-bold">STABLE</div>
+                  <div className="px-2 py-1 rounded-md bg-[#70C7BA]/10 text-[#70C7BA] text-[10px] font-bold">{latestRelease ? 'STABLE' : 'UNAVAILABLE'}</div>
                 </div>
 
                 <div className="space-y-4">
                   {[
                     { label: 'Network', value: 'BlockDAG' },
-                    { label: 'Security', value: 'SHA-256 Verified' },
+                    { label: 'Security', value: preferredAsset?.digest ? 'SHA-256 Published' : 'Checksum unavailable' },
                     { label: 'Core', value: 'Kotlin 2.0 Native' },
                     { label: 'Features', value: '$KB + Si Agent' }
                   ].map((stat, i) => (
@@ -192,7 +192,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 </div>
 
                 <div className="pt-4 mt-4 border-t border-white/5">
-                  <div className="text-[10px] text-gray-500 uppercase tracking-widest mb-3">Live Feed</div>
+                  <div className="text-[10px] text-gray-500 uppercase tracking-widest mb-3">Release Status</div>
                   <div className="space-y-2">
                     <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
                       <motion.div 
@@ -203,8 +203,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                       />
                     </div>
                     <div className="flex justify-between text-[8px] font-mono text-[#70C7BA]/60">
-                      <span>SYNCING_BLOCKS...</span>
-                      <span>LATENCY: 12ms</span>
+                      <span>OFFICIAL RELEASE FEED</span>
+                      <span>{latestRelease ? 'AVAILABLE' : 'CHECKING'}</span>
                     </div>
                   </div>
                 </div>

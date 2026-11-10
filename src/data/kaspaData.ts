@@ -1,26 +1,10 @@
-import { GitHubRelease, GitHubRepoMeta, FeatureItem } from '../types';
+import { GitHubRelease, FeatureItem } from '../types';
 
 export const GITHUB_REPO_URL = 'https://github.com/Curious-being99/Kaspa-browser-';
 export const GITHUB_RELEASES_URL = 'https://github.com/Curious-being99/Kaspa-browser-/releases';
 export const GITHUB_API_BASE = '/api/github';
 
 
-
-export const FALLBACK_REPO_META: GitHubRepoMeta = {
-  name: 'Kaspa-browser-',
-  full_name: 'Curious-being99/Kaspa-browser-',
-  description: 'Kaspa Browser is a privacy-first, decentralized Android web browser and Web3 gateway designed to seamlessly bridge standard web browsing with peer-to-peer decentralized technologies and the Kaspa network ecosystem, featuring $KB as its meme utility token. Built with Kotlin and Jetpack Compose (Material 3), it unifies standard web browsing, decentralized peer-to-peer mesh discovery, cryptographic identity management, on-device local node hosting, and high-performance Web3 browsing into a fast, privacy-first mobile client.',
-  stargazers_count: 28,
-  forks_count: 6,
-  open_issues_count: 0,
-  updated_at: '2026-09-18T12:33:40Z',
-  license: {
-    name: 'Apache License 2.0',
-    spdx_id: 'Apache-2.0',
-    url: 'https://api.github.com/licenses/apache-2.0'
-  },
-  html_url: GITHUB_REPO_URL
-};
 
 export const FEATURES: FeatureItem[] = [
   {
@@ -100,11 +84,11 @@ export const TECH_SPECS = [
 export const FAQS = [
   {
     q: 'How do I ensure the website always shows the latest update?',
-    a: 'The website automatically checks for new software releases and updates in real time. You will always see and download the most up-to-date stable release directly from the site.'
+    a: 'The website checks the latest published release. A direct download is offered only when the release contains the exact signed APK asset; otherwise, the official releases page is opened.'
   },
   {
     q: 'What is KaspaBrowser and what are its core features?',
-    a: 'Kaspa Browser is a privacy-first, decentralized Android web browser with $KB as a meme utility token on the Kaspa BlockDAG network.'
+    a: 'Kaspa Browser is a privacy-first, decentralized Android web browser with $KB as a community token on the Kaspa BlockDAG network.'
   },
   {
     q: 'What makes KaspaBrowser unique for decentralized browsing?',
@@ -112,7 +96,7 @@ export const FAQS = [
   },
   {
     q: 'How does the download button work?',
-    a: 'Clicking the download button directly fetches the official signed APK (KaspaBrowser-release-signed.apk) compiled by GitHub Actions CI/CD from the official repository releases stream.'
+    a: 'The download button uses the exact KaspaBrowser-release-signed.apk asset from the latest official release. If that asset is missing, it opens the official releases page instead of guessing a download URL.'
   },
   {
     q: 'How do I install the signed APK on Android?',
@@ -124,7 +108,7 @@ export const FAQS = [
   },
   {
     q: 'What utility does the $KB Token and Si Agent Command provide?',
-    a: '$KB is a meme utility token for KaspaBrowser on Kaspa BlockDAG. The Si Agent Command provides advanced support for managing wallet live activities and streamlining decentralized transactions within the browser.'
+    a: '$KB is a community token for KaspaBrowser on Kaspa BlockDAG. The Si Agent Command provides advanced support for managing wallet live activities and streamlining decentralized transactions within the browser.'
   }
 ];
 

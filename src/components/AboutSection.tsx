@@ -52,7 +52,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                 <span>What is KaspaBrowser?</span>
               </h3>
               <p className="text-sm text-gray-300 leading-relaxed">
-                <strong>Kaspa Browser</strong> is a privacy-first, decentralized Android web browser and Web3 gateway designed for the BlockDAG network, featuring <strong>$KB</strong> as its meme utility token.
+                <strong>Kaspa Browser</strong> is a privacy-first, decentralized Android web browser and Web3 gateway designed for the BlockDAG network, featuring <strong>$KB</strong> as a community token.
               </p>
               <p className="text-sm text-gray-300 leading-relaxed">
                 Built with <strong>Kotlin</strong> and <strong>Jetpack Compose</strong>, it unifies standard web browsing with high-performance decentralized connectivity into a fast, privacy-first mobile client.
@@ -149,9 +149,9 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                 <div className="w-8 h-8 rounded-lg bg-[#0C0D10] border border-[#282C37] flex items-center justify-center text-[#70C7BA] mb-2.5">
                   <Coins className="w-4 h-4" />
                 </div>
-                <h4 className="text-sm font-bold text-white mb-1">$KB Meme Utility Token</h4>
+                <h4 className="text-sm font-bold text-white mb-1">$KB Community Token</h4>
                 <p className="text-xs text-gray-400 leading-relaxed">
-                  Native meme utility token for KaspaBrowser on the Kaspa BlockDAG network.
+                  A community token on the Kaspa BlockDAG network.
                 </p>
               </div>
 

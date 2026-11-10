@@ -23,11 +23,10 @@ import {
   getPreferredDownloadAsset
 } from './services/githubService';
 import { fetchLiveKaspaStats, LiveKaspaStats } from './services/liveKaspaService';
-import { FALLBACK_REPO_META } from './data/kaspaData';
 
 export default function App() {
   const [latestRelease, setLatestRelease] = useState<GitHubRelease | null>(null);
-  const [repoMeta, setRepoMeta] = useState<GitHubRepoMeta | null>(FALLBACK_REPO_META);
+  const [repoMeta, setRepoMeta] = useState<GitHubRepoMeta | null>(null);
   const [kaspaStats, setKaspaStats] = useState<LiveKaspaStats | null>(null);
 
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
@@ -44,12 +43,12 @@ export default function App() {
         // but here we just want to ensure we get the latest release first
         const latest = await fetchLatestRelease();
         if (!isMounted) return;
-        if (latest) setLatestRelease(latest);
+        setLatestRelease(latest);
 
         // Fetch meta and commits only if we haven't hit rate limits yet
         // or just fetch them all at once once per cycle
         const meta = await fetchRepoMetadata();
-        if (isMounted && meta) setRepoMeta(meta);
+        if (isMounted) setRepoMeta(meta);
       } catch (err) {
         console.warn('GitHub data refresh failed:', err);
       }
@@ -59,7 +58,7 @@ export default function App() {
       try {
         const stats = await fetchLiveKaspaStats();
         if (!isMounted) return;
-        if (stats) setKaspaStats(stats);
+        setKaspaStats(stats);
       } catch (err) {
         console.warn('Price data refresh failed:', err);
       }
@@ -99,6 +98,8 @@ export default function App() {
       setTimeout(() => {
         setDownloadToast(null);
       }, 5000);
+    } else {
+      window.open('https://github.com/Curious-being99/Kaspa-browser-/releases/latest', '_blank', 'noopener,noreferrer');
     }
   };
 

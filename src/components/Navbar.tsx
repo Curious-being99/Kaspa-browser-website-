@@ -92,9 +92,9 @@ export const Navbar: React.FC<NavbarProps> = ({
               Kaspa<span className="text-[#70C7BA]">Browser</span>
             </span>
             <span className="text-[10px] font-mono text-[#70C7BA] font-bold mt-2 leading-tight">
-              KAS: ${kaspaStats?.priceUsd.toFixed(4) || '...'} 
-              <span className={kaspaStats && kaspaStats.change24h >= 0 ? 'text-emerald-400' : 'text-red-400'}>
-                ({kaspaStats ? (kaspaStats.change24h >= 0 ? '+' : '') + kaspaStats.change24h.toFixed(2) + '%' : '...'})
+              KAS: ${kaspaStats && kaspaStats.priceUsd > 0 ? kaspaStats.priceUsd.toFixed(4) : '...'} 
+              <span className={kaspaStats && kaspaStats.priceUsd > 0 ? (kaspaStats.change24h >= 0 ? 'text-emerald-400' : 'text-red-400') : 'text-gray-500'}>
+                ({kaspaStats && kaspaStats.priceUsd > 0 ? (kaspaStats.change24h >= 0 ? '+' : '') + kaspaStats.change24h.toFixed(2) + '%' : '...'})
               </span>
             </span>
           </div>

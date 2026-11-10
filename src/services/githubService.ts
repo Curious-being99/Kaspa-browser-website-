@@ -1,10 +1,5 @@
 import { GitHubRelease, GitHubRepoMeta } from '../types';
-import { 
-  FALLBACK_REPO_META, 
-  GITHUB_API_BASE 
-} from '../data/kaspaData';
-
-const LATEST_CACHE_KEY = 'kaspa_latest_release_v4';
+import { GITHUB_API_BASE } from '../data/kaspaData';
 
 /**
  * Extracts a normalized Unix epoch millisecond timestamp from a release.
@@ -37,31 +32,17 @@ export function isNewerRelease(candidate: GitHubRelease, current: GitHubRelease)
   return getReleaseTimestamp(candidate) > getReleaseTimestamp(current);
 }
 
-function getStoredLatest(): GitHubRelease | null {
-  try {
-    const raw = localStorage.getItem(LATEST_CACHE_KEY);
-    if (raw) {
-      const parsed: GitHubRelease = JSON.parse(raw);
-      if (parsed && parsed.tag_name) return parsed;
-    }
-  } catch (e) {
-    // Ignore storage
-  }
-  return null;
-}
-
-function storeLatest(release: GitHubRelease) {
-  try {
-    localStorage.setItem(LATEST_CACHE_KEY, JSON.stringify(release));
-  } catch (e) {
-    // Ignore storage
-  }
-}
-
 /**
  * Fetches the absolute latest release directly from GitHub API.
  * Strictly returns only the latest release with no fallback or stale cache.
  */
+function isUsableRelease(value: unknown): value is GitHubRelease {
+  if (!value || typeof value !== 'object') return false;
+  const release = value as GitHubRelease & { draft?: boolean };
+  return typeof release.tag_name === 'string' && release.tag_name.length > 0 &&
+    release.draft !== true && release.prerelease !== true && Array.isArray(release.assets);
+}
+
 export async function fetchLatestRelease(): Promise<GitHubRelease | null> {
   try {
     const response = await fetch(`${GITHUB_API_BASE}?path=releases/latest&_t=${Date.now()}`, {
@@ -75,9 +56,7 @@ export async function fetchLatestRelease(): Promise<GitHubRelease | null> {
 
     if (response.ok && (response.headers.get('content-type') || '').includes('json')) {
       const latest: GitHubRelease = await response.json();
-      if (latest && latest.tag_name) {
-        return latest;
-      }
+      if (isUsableRelease(latest)) return latest;
     }
   } catch (err) {
     console.debug('Server API /api/github failed, attempting direct GitHub fetch:', err);
@@ -90,7 +69,7 @@ export async function fetchLatestRelease(): Promise<GitHubRelease | null> {
     });
     if (directRes.ok) {
       const latest: GitHubRelease = await directRes.json();
-      if (latest && latest.tag_name) return latest;
+      if (isUsableRelease(latest)) return latest;
     }
   } catch (e) {
     console.error('Direct GitHub release fetch failed:', e);
@@ -99,7 +78,7 @@ export async function fetchLatestRelease(): Promise<GitHubRelease | null> {
   return null;
 }
 
-export async function fetchRepoMetadata(): Promise<GitHubRepoMeta> {
+export async function fetchRepoMetadata(): Promise<GitHubRepoMeta | null> {
   try {
     const response = await fetch(`${GITHUB_API_BASE}?path=&_t=${Date.now()}`, {
       headers: {
@@ -127,7 +106,7 @@ export async function fetchRepoMetadata(): Promise<GitHubRepoMeta> {
     // Ignore
   }
 
-  return FALLBACK_REPO_META;
+  return null;
 }
 
 export function formatBytes(bytes: number, decimals = 1): string {
@@ -140,49 +119,25 @@ export function formatBytes(bytes: number, decimals = 1): string {
 }
 
 export function getPreferredDownloadAsset(release: GitHubRelease) {
-  const tagName = release.tag_name;
-  let extractedSha = '';
-
-  if (release.body) {
-    const shaMatch = release.body.match(/[a-fA-F0-9]{64}/);
-    if (shaMatch) {
-      extractedSha = shaMatch[0].toLowerCase();
+  const expectedPath = `/Curious-being99/Kaspa-browser-/releases/download/${encodeURIComponent(release.tag_name)}/KaspaBrowser-release-signed.apk`;
+  const asset = release.assets?.find(candidate => {
+    if (candidate.name !== 'KaspaBrowser-release-signed.apk' || typeof candidate.browser_download_url !== 'string') return false;
+    try {
+      const url = new URL(candidate.browser_download_url);
+      return url.protocol === 'https:' && url.hostname === 'github.com' && url.pathname === expectedPath;
+    } catch {
+      return false;
     }
-  }
+  });
+  if (!asset) return null;
 
-  // 1. First priority: Look for signed APK asset in the release payload
-  if (release.assets && release.assets.length > 0) {
-    const signedApk = release.assets.find(a => 
-      a.name.toLowerCase().endsWith('.apk') && a.name.toLowerCase().includes('signed')
-    );
-    if (signedApk && signedApk.browser_download_url) {
-      return {
-        ...signedApk,
-        digest: signedApk.digest || (extractedSha ? `sha256:${extractedSha}` : undefined)
-      };
-    }
+  const digest = typeof asset.digest === 'string' && /^sha256:[a-fA-F0-9]{64}$/.test(asset.digest)
+    ? asset.digest.toLowerCase()
+    : undefined;
 
-    // 2. Second priority: Any .apk asset attached to this release
-    const anyApk = release.assets.find(a => a.name.toLowerCase().endsWith('.apk'));
-    if (anyApk && anyApk.browser_download_url) {
-      return {
-        ...anyApk,
-        digest: anyApk.digest || (extractedSha ? `sha256:${extractedSha}` : undefined)
-      };
-    }
-  }
-
-  // 3. Direct mapping to GitHub release tag download route
-  return {
-    name: 'KaspaBrowser-release-signed.apk',
-    browser_download_url: `https://github.com/Curious-being99/Kaspa-browser-/releases/download/${tagName}/KaspaBrowser-release-signed.apk`,
-    size: release.assets?.[0]?.size || 0,
-    digest: extractedSha ? `sha256:${extractedSha}` : undefined
-  };
+  return { ...asset, digest };
 }
-
 export function triggerBrowserDownload(url: string, filename?: string) {
-  // Direct hidden anchor triggering single download instance
   const link = document.createElement('a');
   link.href = url;
   link.download = filename || 'KaspaBrowser-release-signed.apk';
@@ -190,8 +145,7 @@ export function triggerBrowserDownload(url: string, filename?: string) {
   document.body.appendChild(link);
   link.click();
 
-  setTimeout(() => {
+  window.setTimeout(() => {
     if (document.body.contains(link)) document.body.removeChild(link);
   }, 1000);
 }
-

@@ -30,9 +30,9 @@ export const QrCodeModal: React.FC<QrCodeModalProps> = ({
   if (!isOpen) return null;
 
   const preferredAsset = latestRelease ? getPreferredDownloadAsset(latestRelease) : null;
-  const targetTag = latestRelease?.tag_name || 'latest';
-  const downloadUrl = preferredAsset?.browser_download_url || 
-    `https://github.com/Curious-being99/Kaspa-browser-/releases/download/${targetTag}/KaspaBrowser-release-signed.apk`;
+  const downloadUrl = preferredAsset?.browser_download_url ||
+    latestRelease?.html_url ||
+    'https://github.com/Curious-being99/Kaspa-browser-/releases/latest';
 
   // Encode QR URL using google chart API or high reliability QR proxy
   const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(downloadUrl)}&bgcolor=14-16-28&color=112-199-186&margin=10`;
@@ -88,7 +88,7 @@ export const QrCodeModal: React.FC<QrCodeModalProps> = ({
           Scan to Install on Android
         </h2>
         <p className="text-xs text-gray-400 mt-1 mb-4">
-          Point your Android camera or QR scanner at the code below to download the latest release APK directly to your phone.
+          Scan to open the verified APK download when available, or the official GitHub releases page.
         </p>
 
         {/* QR Code Container */}
