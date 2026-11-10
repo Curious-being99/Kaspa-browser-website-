@@ -119,11 +119,16 @@ export function formatBytes(bytes: number, decimals = 1): string {
 }
 
 export function getPreferredDownloadAsset(release: GitHubRelease) {
-  const asset = release.assets?.find(candidate =>
-    candidate.name === 'KaspaBrowser-release-signed.apk' &&
-    typeof candidate.browser_download_url === 'string' &&
-    candidate.browser_download_url.startsWith('https://github.com/Curious-being99/Kaspa-browser-/releases/download/')
-  );
+  const expectedPath = `/Curious-being99/Kaspa-browser-/releases/download/${encodeURIComponent(release.tag_name)}/KaspaBrowser-release-signed.apk`;
+  const asset = release.assets?.find(candidate => {
+    if (candidate.name !== 'KaspaBrowser-release-signed.apk' || typeof candidate.browser_download_url !== 'string') return false;
+    try {
+      const url = new URL(candidate.browser_download_url);
+      return url.protocol === 'https:' && url.hostname === 'github.com' && url.pathname === expectedPath;
+    } catch {
+      return false;
+    }
+  });
   if (!asset) return null;
 
   const digest = typeof asset.digest === 'string' && /^sha256:[a-fA-F0-9]{64}$/.test(asset.digest)
