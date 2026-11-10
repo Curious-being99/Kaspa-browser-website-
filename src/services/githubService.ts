@@ -36,7 +36,14 @@ export function isNewerRelease(candidate: GitHubRelease, current: GitHubRelease)
  * Fetches the absolute latest release directly from GitHub API.
  * Strictly returns only the latest release with no fallback or stale cache.
  */
-function isUsableRelease(value: unknown): value is GitHubRelease {\n  if (!value || typeof value !== 'object') return false;\n  const release = value as GitHubRelease & { draft?: boolean };\n  return typeof release.tag_name === 'string' && release.tag_name.length > 0 &&\n    release.draft !== true && release.prerelease !== true && Array.isArray(release.assets);\n}\n\nexport async function fetchLatestRelease(): Promise<GitHubRelease | null> {
+function isUsableRelease(value: unknown): value is GitHubRelease {
+  if (!value || typeof value !== 'object') return false;
+  const release = value as GitHubRelease & { draft?: boolean };
+  return typeof release.tag_name === 'string' && release.tag_name.length > 0 &&
+    release.draft !== true && release.prerelease !== true && Array.isArray(release.assets);
+}
+
+export async function fetchLatestRelease(): Promise<GitHubRelease | null> {
   try {
     const response = await fetch(`${GITHUB_API_BASE}?path=releases/latest&_t=${Date.now()}`, {
       method: 'GET',
