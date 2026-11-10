@@ -113,7 +113,7 @@ export const EcosystemSection: React.FC<EcosystemSectionProps> = ({ kaspaStats }
 
               {/* Token Description */}
               <p className="text-xs sm:text-sm text-gray-300 mb-5 leading-relaxed">
-                <span className="font-semibold text-white">$KB (Kaspabrowser Token)</span> is a meme utility token for KaspaBrowser on the Kaspa BlockDAG network.
+                <span className="font-semibold text-white">$KB (Kaspabrowser Token)</span> is a community token for KaspaBrowser on the Kaspa BlockDAG network.
               </p>
               
               {/* REAL-TIME Telemetry Grid (Pure On-Chain Metrics) */}
