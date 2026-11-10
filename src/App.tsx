@@ -43,12 +43,12 @@ export default function App() {
         // but here we just want to ensure we get the latest release first
         const latest = await fetchLatestRelease();
         if (!isMounted) return;
-        if (latest) setLatestRelease(latest);
+        setLatestRelease(latest);
 
         // Fetch meta and commits only if we haven't hit rate limits yet
         // or just fetch them all at once once per cycle
         const meta = await fetchRepoMetadata();
-        if (isMounted && meta) setRepoMeta(meta);
+        if (isMounted) setRepoMeta(meta);
       } catch (err) {
         console.warn('GitHub data refresh failed:', err);
       }
