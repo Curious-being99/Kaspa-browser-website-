@@ -91,14 +91,14 @@ export const InstallationGuide: React.FC = () => {
                 Cryptographically Signed &amp; Auditable
               </h4>
               <p className="text-xs text-gray-400 mt-1 max-w-2xl leading-relaxed">
-                Every release APK is compiled and signed directly via GitHub Actions CI/CD. You can independently verify SHA-256 checksums or inspect the Apache 2.0 source code.
+                Use the signed APK asset published on the official GitHub release and compare its SHA-256 digest when one is provided. Inspect the Apache 2.0 source code before installing.
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0C0D10] border border-[#70C7BA]/40 text-xs font-mono text-[#70C7BA] shrink-0">
             <CheckCircle2 className="w-4 h-4" />
-            <span>GitHub CI/CD Signed Build</span>
+            <span>Signed APK Asset</span>
           </div>
         </div>
 
