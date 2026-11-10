@@ -27,7 +27,7 @@ import { FALLBACK_REPO_META } from './data/kaspaData';
 
 export default function App() {
   const [latestRelease, setLatestRelease] = useState<GitHubRelease | null>(null);
-  const [repoMeta, setRepoMeta] = useState<GitHubRepoMeta | null>(FALLBACK_REPO_META);
+  const [repoMeta, setRepoMeta] = useState<GitHubRepoMeta | null>(null);
   const [kaspaStats, setKaspaStats] = useState<LiveKaspaStats | null>(null);
 
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
