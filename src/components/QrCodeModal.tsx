@@ -88,7 +88,7 @@ export const QrCodeModal: React.FC<QrCodeModalProps> = ({
           Scan to Install on Android
         </h2>
         <p className="text-xs text-gray-400 mt-1 mb-4">
-          Point your Android camera or QR scanner at the code below to download the latest release APK directly to your phone.
+          Scan to open the verified APK download when available, or the official GitHub releases page.
         </p>
 
         {/* QR Code Container */}
