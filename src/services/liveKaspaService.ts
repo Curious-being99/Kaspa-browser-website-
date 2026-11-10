@@ -30,7 +30,7 @@ export async function fetchLiveGitHubCommits(): Promise<LiveFeedItem[]> {
       return cachedObj.data;
     }
 
-    const response = await fetch(`${GITHUB_REPO_API}/commits?per_page=5`, {
+    const response = await fetch(`${GITHUB_REPO_API}?path=commits&per_page=5`, {
       headers: { Accept: 'application/vnd.github+json' }
     });
     if (!response.ok) return cachedObj && Array.isArray(cachedObj.data) ? cachedObj.data : [];
