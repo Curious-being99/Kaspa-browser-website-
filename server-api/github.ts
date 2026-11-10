@@ -25,7 +25,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'Query parameters are not supported for this path' });
   }
 
-  const url = `${REPO_API_BASE}${subPath ? `/${subPath}` : ''}${params.size ? `?${params.toString()}` : ''}`;
+  const queryString = params.toString();
+  const url = `${REPO_API_BASE}${subPath ? `/${subPath}` : ''}${queryString ? `?${queryString}` : ''}`;
 
   try {
     const headers: Record<string, string> = {
