@@ -42,6 +42,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   };
 
   const copyHashToClipboard = async () => {
+    if (!shaDigest) return;
     try {
       await navigator.clipboard.writeText(shaDigest);
       setCopiedHash(true);
