@@ -32,7 +32,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const [copiedHash, setCopiedHash] = useState(false);
   const [copiedContract, setCopiedContract] = useState(false);
   const preferredAsset = latestRelease ? getPreferredDownloadAsset(latestRelease) : null;
-  // Dynamically uses the live release SHA from GitHub, falling back to current stable digest
   const shaDigest = preferredAsset?.digest || null;
 
   const copyContractToClipboard = async () => {
