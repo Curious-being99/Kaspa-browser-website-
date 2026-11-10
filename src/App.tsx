@@ -23,7 +23,6 @@ import {
   getPreferredDownloadAsset
 } from './services/githubService';
 import { fetchLiveKaspaStats, LiveKaspaStats } from './services/liveKaspaService';
-import { FALLBACK_REPO_META } from './data/kaspaData';
 
 export default function App() {
   const [latestRelease, setLatestRelease] = useState<GitHubRelease | null>(null);
@@ -99,6 +98,8 @@ export default function App() {
       setTimeout(() => {
         setDownloadToast(null);
       }, 5000);
+    } else {
+      window.open('https://github.com/Curious-being99/Kaspa-browser-/releases/latest', '_blank', 'noopener,noreferrer');
     }
   };
 
