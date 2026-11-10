@@ -149,9 +149,9 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                 <div className="w-8 h-8 rounded-lg bg-[#0C0D10] border border-[#282C37] flex items-center justify-center text-[#70C7BA] mb-2.5">
                   <Coins className="w-4 h-4" />
                 </div>
-                <h4 className="text-sm font-bold text-white mb-1">$KB Meme Utility Token</h4>
+                <h4 className="text-sm font-bold text-white mb-1">$KB Community Token</h4>
                 <p className="text-xs text-gray-400 leading-relaxed">
-                  Native meme utility token for KaspaBrowser on the Kaspa BlockDAG network.
+                  A community token on the Kaspa BlockDAG network.
                 </p>
               </div>
 
