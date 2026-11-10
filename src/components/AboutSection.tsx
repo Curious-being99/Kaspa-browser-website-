@@ -52,7 +52,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                 <span>What is KaspaBrowser?</span>
               </h3>
               <p className="text-sm text-gray-300 leading-relaxed">
-                <strong>Kaspa Browser</strong> is a privacy-first, decentralized Android web browser and Web3 gateway designed for the BlockDAG network, featuring <strong>$KB</strong> as its meme utility token.
+                <strong>Kaspa Browser</strong> is a privacy-first, decentralized Android web browser and Web3 gateway designed for the BlockDAG network, featuring <strong>$KB</strong> as a community token.
               </p>
               <p className="text-sm text-gray-300 leading-relaxed">
                 Built with <strong>Kotlin</strong> and <strong>Jetpack Compose</strong>, it unifies standard web browsing with high-performance decentralized connectivity into a fast, privacy-first mobile client.
