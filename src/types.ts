@@ -18,6 +18,7 @@ export interface GitHubRelease {
   body: string;
   html_url: string;
   prerelease: boolean;
+  draft?: boolean;
   assets: GitHubAsset[];
   tarball_url: string;
   zipball_url: string;
