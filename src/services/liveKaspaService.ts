@@ -21,102 +21,94 @@ const GITHUB_REPO_API = '/api/github';
 
 export async function fetchLiveGitHubCommits(): Promise<LiveFeedItem[]> {
   const CACHE_KEY = 'github_commits_cache';
-  const CACHE_TIME = 3600000; // 1 hour
+  const CACHE_TIME = 3600000;
 
   try {
     const cached = localStorage.getItem(CACHE_KEY);
     const cachedObj = cached ? JSON.parse(cached) : null;
-    
-    // Check if we have valid cache and it's fresh
-    if (cachedObj && Date.now() - cachedObj.timestamp < CACHE_TIME) {
+    if (cachedObj && Date.now() - cachedObj.timestamp < CACHE_TIME && Array.isArray(cachedObj.data)) {
       return cachedObj.data;
     }
 
-    const res = await fetch(`${GITHUB_REPO_API}/commits?per_page=5`, {
-      headers: { 'Accept': 'application/vnd.github.v3+json' }
+    const response = await fetch(`${GITHUB_REPO_API}/commits?per_page=5`, {
+      headers: { Accept: 'application/vnd.github+json' }
     });
+    if (!response.ok) return cachedObj && Array.isArray(cachedObj.data) ? cachedObj.data : [];
 
-    if (res.status === 403) {
-      console.debug('GitHub API rate limit reached. Using cached commits.');
-      return cachedObj ? cachedObj.data : [];
-    }
-
-    if (!res.ok) {
-      return cachedObj ? cachedObj.data : [];
-    }
-    
-    const commits = await res.json();
-    
-    const data = Array.isArray(commits) ? commits.map((c: any, index: number) => {
-      const date = new Date(c.commit.committer.date);
-      const hoursAgo = Math.max(1, Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60)));
+    const commits = await response.json();
+    const data = Array.isArray(commits) ? commits.filter((commit: any) =>
+      commit?.commit?.committer?.date && typeof commit?.sha === 'string'
+    ).map((commit: any) => {
+      const date = new Date(commit.commit.committer.date);
+      const hoursAgo = Math.max(0, Math.floor((Date.now() - date.getTime()) / 3600000));
       const timeAgo = hoursAgo > 24 ? `${Math.floor(hoursAgo / 24)}d ago` : `${hoursAgo}h ago`;
-      
+      const message = String(commit.commit.message || '').split('\n')[0];
       return {
-        id: c.sha || index,
+        id: commit.sha,
         category: 'GitHub' as const,
         timeAgo,
-        title: c.commit.message.split('\n')[0],
-        snippet: `Commit by ${c.commit.author.name} (${c.sha.substring(0, 7)}) - ${c.commit.message}`,
-        author: `by @${c.author?.login || c.commit.author.name}`,
-        url: c.html_url
+        title: message,
+        snippet: `Commit ${commit.sha.substring(0, 7)} — ${message}`,
+        author: `by @${commit.author?.login || commit.commit.author?.name || 'unknown'}`,
+        url: commit.html_url
       };
     }) : [];
 
-    if (data.length > 0) {
-      localStorage.setItem(CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
-    }
+    if (data.length > 0) localStorage.setItem(CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
     return data;
-  } catch (err) {
-    console.warn('Live GitHub commits fetch error:', err);
-    const cached = localStorage.getItem(CACHE_KEY);
-    return cached ? JSON.parse(cached).data : [];
+  } catch (error) {
+    console.warn('Live GitHub commits fetch error:', error);
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      const parsed = cached ? JSON.parse(cached) : null;
+      return Array.isArray(parsed?.data) ? parsed.data : [];
+    } catch {
+      return [];
+    }
   }
 }
 
 export async function fetchLiveKaspaStats(): Promise<LiveKaspaStats | null> {
   try {
-    const [priceRes, dagRes] = await Promise.allSettled([
-      fetch('https://api.coingecko.com/api/v3/simple/price?ids=kaspa&vs_currencies=usd&include_24hr_change=true&include_market_cap=true'),
-      fetch('https://api.kaspa.org/info/blockdag')
+    const [priceResult, dagResult] = await Promise.allSettled([
+      fetch('https://api.coingecko.com/api/v3/simple/price?ids=kaspa&vs_currencies=usd&include_24hr_change=true&include_market_cap=true', { cache: 'no-store' }),
+      fetch('https://api.kaspa.org/info/blockdag', { cache: 'no-store' })
     ]);
 
-    let priceUsd = 0.142;
-    let change24h = 3.4;
-    let marketCap = 3500000000;
-    let blockCount = 104520930;
-    let hashrate = '850 PH/s';
-    let tps = '10+ TPS';
+    let priceUsd = 0;
+    let change24h = 0;
+    let marketCap = 0;
+    let blockCount = 0;
+    let hashrate = 'Unavailable';
+    const tps = 'Unavailable';
+    let hasLiveData = false;
 
-    if (priceRes.status === 'fulfilled' && priceRes.value.ok) {
-      const priceData = await priceRes.value.json();
-      if (priceData?.kaspa) {
-        priceUsd = priceData.kaspa.usd || priceUsd;
-        change24h = priceData.kaspa.usd_24h_change || change24h;
-        marketCap = priceData.kaspa.usd_market_cap || marketCap;
+    if (priceResult.status === 'fulfilled' && priceResult.value.ok) {
+      const data = await priceResult.value.json();
+      const kaspa = data?.kaspa;
+      if (Number.isFinite(kaspa?.usd) && kaspa.usd > 0) {
+        priceUsd = kaspa.usd;
+        change24h = Number.isFinite(kaspa.usd_24h_change) ? kaspa.usd_24h_change : 0;
+        marketCap = Number.isFinite(kaspa.usd_market_cap) ? kaspa.usd_market_cap : 0;
+        hasLiveData = true;
       }
     }
 
-    if (dagRes.status === 'fulfilled' && dagRes.value.ok) {
-      const dagData = await dagRes.value.json();
-      if (dagData) {
-        blockCount = dagData.blockCount || blockCount;
-        if (dagData.difficulty) {
-          hashrate = `${(dagData.difficulty / 1e15).toFixed(1)} PH/s`;
-        }
+    if (dagResult.status === 'fulfilled' && dagResult.value.ok) {
+      const data = await dagResult.value.json();
+      if (Number.isFinite(data?.blockCount) && data.blockCount >= 0) {
+        blockCount = data.blockCount;
+        hasLiveData = true;
+      }
+      if (Number.isFinite(data?.difficulty) && data.difficulty > 0) {
+        hashrate = `${(data.difficulty / 1e15).toFixed(1)} PH/s`;
+        hasLiveData = true;
       }
     }
 
-    return {
-      priceUsd,
-      change24h,
-      marketCap,
-      blockCount,
-      hashrate,
-      tps
-    };
-  } catch (err) {
-    console.warn('Live Kaspa stats fetch error:', err);
+    return hasLiveData ? { priceUsd, change24h, marketCap, blockCount, hashrate, tps } : null;
+  } catch (error) {
+    console.warn('Live Kaspa stats fetch error:', error);
     return null;
   }
 }
