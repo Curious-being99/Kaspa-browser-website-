@@ -33,7 +33,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const [copiedContract, setCopiedContract] = useState(false);
   const preferredAsset = latestRelease ? getPreferredDownloadAsset(latestRelease) : null;
   // Dynamically uses the live release SHA from GitHub, falling back to current stable digest
-  const shaDigest = preferredAsset?.digest || '24e7b273dd9a6ada97a0104210386aa55f43e56f45aedbfec57f1f18529bac5d';
+  const shaDigest = preferredAsset?.digest || null;
 
   const copyContractToClipboard = async () => {
       await navigator.clipboard.writeText(KB_TOKEN_CONTRACT);
@@ -91,7 +91,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#70C7BA] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#70C7BA]"></span>
               </span>
-              {latestRelease?.tag_name ? (latestRelease.tag_name.startsWith('v') ? latestRelease.tag_name : `v${latestRelease.tag_name}`) : 'v1.0'} Stable Release
+              {latestRelease?.tag_name ? (latestRelease.tag_name.startsWith('v') ? latestRelease.tag_name : `v${latestRelease.tag_name}`) : 'Release information unavailable'}
             </div>
 
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tighter text-white leading-[0.9]">
@@ -100,7 +100,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </h1>
 
             <p className="text-lg text-gray-400 max-w-xl leading-relaxed">
-              Engineered for speed, privacy, and decentralized connectivity. KaspaBrowser is your native gateway to the Kaspa BlockDAG ecosystem, with $KB — the meme-born utility token of the KaspaBrowser ecosystem.
+              Engineered for speed, privacy, and decentralized connectivity. KaspaBrowser is your native gateway to the Kaspa BlockDAG ecosystem, with $KB, a community token on Kaspa.
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
