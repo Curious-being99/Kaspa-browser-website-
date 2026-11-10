@@ -137,4 +137,15 @@ export function getPreferredDownloadAsset(release: GitHubRelease) {
 
   return { ...asset, digest };
 }
+export function triggerBrowserDownload(url: string, filename?: string) {
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename || 'KaspaBrowser-release-signed.apk';
+  link.rel = 'noopener noreferrer';
+  document.body.appendChild(link);
+  link.click();
 
+  window.setTimeout(() => {
+    if (document.body.contains(link)) document.body.removeChild(link);
+  }, 1000);
+}
