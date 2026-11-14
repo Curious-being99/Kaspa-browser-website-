@@ -33,7 +33,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#14161C] border border-[#70C7BA]/40 text-xs font-mono text-[#70C7BA]">
             <Info className="w-3.5 h-3.5" />
-            <span>ABOUT KASPABROWSER</span>
+            <span>ABOUT KAZIUM</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             Privacy-First, Decentralized Android Web Browser &amp; Web3 Gateway
