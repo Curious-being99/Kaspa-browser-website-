@@ -13,7 +13,6 @@ import { InstallationGuide } from './components/InstallationGuide';
 import { FaqSection } from './components/FaqSection';
 import { Footer } from './components/Footer';
 import { QrCodeModal } from './components/QrCodeModal';
-import { EcosystemSection } from './components/EcosystemSection';
 
 import { GitHubRelease, GitHubRepoMeta } from './types';
 import { 
@@ -131,12 +130,7 @@ export default function App() {
         />
 
         {/* 3. Core Features (Features Grid) */}
-        <FeaturesGrid />
-
-        {/* 4. $KB & Si Agent Ecosystem */}
-        <EcosystemSection kaspaStats={kaspaStats} />
-
-        {/* 5. Architecture & Technology Specifications */}
+        <FeaturesGrid />{/* 5. Architecture & Technology Specifications */}
         <ArchitectureSection />
 
 

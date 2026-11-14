@@ -6,8 +6,7 @@ import {
   X, 
   ExternalLink, 
   Radio, 
-  Sparkles,
-  Coins
+  Sparkles
 } from 'lucide-react';
 import { KaspaLogo } from './KaspaLogo';
 import { GitHubRepoMeta } from '../types';
@@ -42,7 +41,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     { label: 'Overview', href: '#overview' },
     { label: 'About Us', href: '#about-us' },
     { label: 'Features', href: '#features' },
-    { label: 'Ecosystem', href: '#ecosystem' },
     { label: 'Architecture', href: '#architecture' },
     { label: 'Installation', href: '#install-guide' },
     { label: 'FAQ', href: '#faq' }
