@@ -119,9 +119,10 @@ export function formatBytes(bytes: number, decimals = 1): string {
 }
 
 export function getPreferredDownloadAsset(release: GitHubRelease) {
-  const expectedPath = `/Curious-being99/Kaspa-browser-/releases/download/${encodeURIComponent(release.tag_name)}/KaspaBrowser-release-signed.apk`;
+  const expectedName = 'Kazium-release-signed.apk';
+  const expectedPath = `/Curious-being99/Kaspa-browser-/releases/download/${encodeURIComponent(release.tag_name)}/${expectedName}`;
   const asset = release.assets?.find(candidate => {
-    if (candidate.name !== 'KaspaBrowser-release-signed.apk' || typeof candidate.browser_download_url !== 'string') return false;
+    if (candidate.name !== expectedName || typeof candidate.browser_download_url !== 'string') return false;
     try {
       const url = new URL(candidate.browser_download_url);
       return url.protocol === 'https:' && url.hostname === 'github.com' && url.pathname === expectedPath;
@@ -140,7 +141,7 @@ export function getPreferredDownloadAsset(release: GitHubRelease) {
 export function triggerBrowserDownload(url: string, filename?: string) {
   const link = document.createElement('a');
   link.href = url;
-  link.download = filename || 'KaspaBrowser-release-signed.apk';
+  link.download = filename || 'Kazium-release-signed.apk';
   link.rel = 'noopener noreferrer';
   document.body.appendChild(link);
   link.click();
