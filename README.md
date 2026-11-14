@@ -1,11 +1,4 @@
-# Kazium
-
-> **Privacy-First, Decentralized Android Web Browser & Web3 Gateway**
-
-Kazium is a privacy-first, decentralized Android web browser and Web3 gateway designed to seamlessly bridge standard web browsing with peer-to-peer decentralized technologies and the Kaspa network ecosystem.
-
-Built with **Kotlin** and **Jetpack Compose (Material 3)**, it unifies standard web browsing, decentralized peer-to-peer mesh discovery, cryptographic identity management, on-device local node hosting, and high-performance Web3 browsing into a fast, privacy-first mobile client.
-
+# Kazium is an Android web browser and Web3 gateway built with Kotlin and Jetpack Compose (Material 3). It pairs Kazview (its hybrid Chromium/Android System WebView + Jetpack WebKit + Custom Tabs orchestration core) with a hardware-backed Password & Passkey Vault, fail-closed encrypted DNS-over-HTTPS (DoH), real-time tracker/ad shielding, decentralized name resolution, an encrypted Kaspa wallet & dApp bridge, signal-only ecosystem notifications, and optional native Rust crates (kaspasearch-engine, kaspasearch-core).
 ---
 
 ## 📱 Android Application Overview
