@@ -119,23 +119,17 @@ export function formatBytes(bytes: number, decimals = 1): string {
 }
 
 export function getPreferredDownloadAsset(release: GitHubRelease) {
-  // Prefer the Kazium asset, while keeping downloads working for releases
-  // published before the APK rename.
-  const expectedNames = ['Kazium-release-signed.apk', 'KaspaBrowser-release-signed.apk'];
-  const asset = expectedNames
-    .map(name => {
-      const expectedPath = `/Curious-being99/Kaspa-browser-/releases/download/${encodeURIComponent(release.tag_name)}/${name}`;
-      return release.assets?.find(candidate => {
-        if (candidate.name !== name || typeof candidate.browser_download_url !== 'string') return false;
-        try {
-          const url = new URL(candidate.browser_download_url);
-          return url.protocol === 'https:' && url.hostname === 'github.com' && url.pathname === expectedPath;
-        } catch {
-          return false;
-        }
-      });
-    })
-    .find(Boolean);
+  const expectedName = 'Kazium-release-signed.apk';
+  const expectedPath = `/Curious-being99/Kaspa-browser-/releases/download/${encodeURIComponent(release.tag_name)}/${expectedName}`;
+  const asset = release.assets?.find(candidate => {
+    if (candidate.name !== expectedName || typeof candidate.browser_download_url !== 'string') return false;
+    try {
+      const url = new URL(candidate.browser_download_url);
+      return url.protocol === 'https:' && url.hostname === 'github.com' && url.pathname === expectedPath;
+    } catch {
+      return false;
+    }
+  });
   if (!asset) return null;
 
   const digest = typeof asset.digest === 'string' && /^sha256:[a-fA-F0-9]{64}$/.test(asset.digest)
