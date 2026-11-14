@@ -31,7 +31,7 @@ export const Footer: React.FC<FooterProps> = ({ latestRelease }) => {
             <div className="flex items-center gap-3">
               <KaspaLogo className="w-8 h-8 rounded-full" />
               <span className="font-extrabold text-lg tracking-tight text-white">
-                Kaspa<span className="text-[#70C7BA]">Browser</span>
+                Kaz<span className="text-[#70C7BA]">ium</span>
               </span>
             </div>
 

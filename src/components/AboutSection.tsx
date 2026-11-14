@@ -51,7 +51,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                 <span>What is Kazium?</span>
               </h3>
               <p className="text-sm text-gray-300 leading-relaxed">
-                <strong>Kazium</strong> is a privacy-first, decentralized Android web browser and Web3 gateway designed for the BlockDAG network, 
+                <strong>Kazium</strong> is a privacy-first, decentralized Android web browser and Web3 gateway designed for the BlockDAG network.
               </p>
               <p className="text-sm text-gray-300 leading-relaxed">
                 Built with <strong>Kotlin</strong> and <strong>Jetpack Compose</strong>, it unifies standard web browsing with high-performance decentralized connectivity into a fast, privacy-first mobile client.
