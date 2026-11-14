@@ -42,13 +42,13 @@ export const FeaturesGrid: React.FC = () => {
         <div className="text-center max-w-3xl mx-auto mb-12 space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#14161C] border border-[#70C7BA]/30 text-xs font-mono text-[#70C7BA]">
             <Layers className="w-3.5 h-3.5" />
-            <span>WHAT KASPABROWSER IS ALL ABOUT</span>
+            <span>WHAT KAZIUM IS ALL ABOUT</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             Built from the Ground Up for Decentralized Speed &amp; Privacy
           </h2>
           <p className="text-sm sm:text-base text-gray-400">
-            A comprehensive overview of the architecture, protocol interceptors, cryptography engines, and BlockDAG utilities baked natively into KaspaBrowser.
+            A comprehensive overview of the architecture, protocol interceptors, cryptography engines, and BlockDAG utilities baked natively into Kazium.
           </p>
 
           {/* Filter Pills */}

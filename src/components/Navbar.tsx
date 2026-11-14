@@ -6,8 +6,7 @@ import {
   X, 
   ExternalLink, 
   Radio, 
-  Sparkles,
-  Coins
+  Sparkles
 } from 'lucide-react';
 import { KaspaLogo } from './KaspaLogo';
 import { GitHubRepoMeta } from '../types';
@@ -42,7 +41,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     { label: 'Overview', href: '#overview' },
     { label: 'About Us', href: '#about-us' },
     { label: 'Features', href: '#features' },
-    { label: 'Ecosystem', href: '#ecosystem' },
     { label: 'Architecture', href: '#architecture' },
     { label: 'Installation', href: '#install-guide' },
     { label: 'FAQ', href: '#faq' }
@@ -89,7 +87,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <KaspaLogo className="w-9 h-9 rounded-full shadow-sm transition-transform group-hover:scale-105" />
           <div className="flex flex-col">
             <span className="font-extrabold text-xl tracking-tight text-[#F3F4F6] group-hover:text-white transition-colors">
-              Kaspa<span className="text-[#70C7BA]">Browser</span>
+              Kaz<span className="text-[#70C7BA]">ium</span>
             </span>
             <span className="text-[10px] font-mono text-[#70C7BA] font-bold mt-2 leading-tight">
               KAS: ${kaspaStats && kaspaStats.priceUsd > 0 ? kaspaStats.priceUsd.toFixed(4) : '...'} 

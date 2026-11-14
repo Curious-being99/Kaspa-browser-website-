@@ -1,8 +1,8 @@
-# Kaspa Browser
+# Kazium
 
 > **Privacy-First, Decentralized Android Web Browser & Web3 Gateway**
 
-Kaspa Browser is a privacy-first, decentralized Android web browser and Web3 gateway designed to seamlessly bridge standard web browsing with peer-to-peer decentralized technologies and the Kaspa network ecosystem.
+Kazium is a privacy-first, decentralized Android web browser and Web3 gateway designed to seamlessly bridge standard web browsing with peer-to-peer decentralized technologies and the Kaspa network ecosystem.
 
 Built with **Kotlin** and **Jetpack Compose (Material 3)**, it unifies standard web browsing, decentralized peer-to-peer mesh discovery, cryptographic identity management, on-device local node hosting, and high-performance Web3 browsing into a fast, privacy-first mobile client.
 
@@ -43,11 +43,11 @@ Built with **Kotlin** and **Jetpack Compose (Material 3)**, it unifies standard 
 
 ---
 
-## 🌐 Official Web Portal & Release Tracker (`kaspabrowser.xyz`)
+## 🌐 Official Web Portal & Release Tracker (`kazium.xyz`)
 
 This repository also contains the official web presentation platform and automated release distributor:
 
-* **Live GitHub Release Synchronization:** Automatically fetches and serves the latest signed APK binaries (`KaspaBrowser-release-signed.apk`), release notes, file sizes, and verification digests.
+* **Live GitHub Release Synchronization:** Automatically fetches and serves the latest signed APK binaries (`Kazium-release-signed.apk`), release notes, file sizes, and verification digests.
 * **Dynamic QR Code Scanner:** Instant on-screen QR code generator for direct mobile APK installation.
 * **Integrity & Verification:** Display of SHA-256 binary checksums for cryptographic authenticity verification.
 * **Security Hardening:** Compliant with RFC 9116 (`/.well-known/security.txt`), Schema.org `SoftwareApplication` JSON-LD, and search indexation directives.
@@ -71,5 +71,5 @@ npm run build
 
 ## 📄 License
 
-KaspaBrowser is free, open-source software licensed under the **[Apache License 2.0](LICENSE)**.
+Kazium is free, open-source software licensed under the **[Apache License 2.0](LICENSE)**.
 
