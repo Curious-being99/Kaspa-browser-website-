@@ -87,28 +87,24 @@ export const FAQS = [
     a: 'The website checks the latest published release. A direct download is offered only when the release contains the exact signed APK asset; otherwise, the official releases page is opened.'
   },
   {
-    q: 'What is KaspaBrowser and what are its core features?',
-    a: 'Kaspa Browser is a privacy-first, decentralized Android web browser with $KB as a community token on the Kaspa BlockDAG network.'
+    q: 'What is Kazium and what are its core features?',
+    a: 'Kazium is a privacy-first, decentralized Android web browser and Web3 gateway for the Kaspa BlockDAG network.'
   },
   {
-    q: 'What makes KaspaBrowser unique for decentralized browsing?',
-    a: 'KaspaBrowser unifies standard web browsing with peer-to-peer mesh discovery, cryptographic identity management, on-device local node hosting, and high-performance Web3 browsing into a fast, privacy-first mobile client built natively with Jetpack Compose.'
+    q: 'What makes Kazium unique for decentralized browsing?',
+    a: 'Kazium unifies standard web browsing with peer-to-peer mesh discovery, cryptographic identity management, on-device local node hosting, and high-performance Web3 browsing into a fast, privacy-first mobile client built natively with Jetpack Compose.'
   },
   {
     q: 'How does the download button work?',
-    a: 'The download button uses the exact KaspaBrowser-release-signed.apk asset from the latest official release. If that asset is missing, it opens the official releases page instead of guessing a download URL.'
+    a: 'The download button uses the exact Kazium-release-signed.apk asset from the latest official release. If that asset is missing, it opens the official releases page instead of guessing a download URL.'
   },
   {
     q: 'How do I install the signed APK on Android?',
-    a: 'After downloading KaspaBrowser-release-signed.apk, open the file on your Android device. If prompted, toggle "Allow from this source" in Settings > Install Unknown Apps, then tap Install.'
+    a: 'After downloading Kazium-release-signed.apk, open the file on your Android device. If prompted, toggle "Allow from this source" in Settings > Install Unknown Apps, then tap Install.'
   },
   {
-    q: 'Is KaspaBrowser completely open source?',
-    a: 'Yes, KaspaBrowser is 100% open source under the Apache 2.0 License. You can inspect the source code, review build scripts, and verify SHA-256 release checksums directly on GitHub.'
+    q: 'Is Kazium completely open source?',
+    a: 'Yes, Kazium is 100% open source under the Apache 2.0 License. You can inspect the source code, review build scripts, and verify SHA-256 release checksums directly on GitHub.'
   },
-  {
-    q: 'What utility does the $KB Token and Si Agent Command provide?',
-    a: '$KB is a community token for KaspaBrowser on Kaspa BlockDAG. The Si Agent Command provides advanced support for managing wallet live activities and streamlining decentralized transactions within the browser.'
-  }
 ];
 
