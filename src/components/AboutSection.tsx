@@ -13,8 +13,7 @@ import {
   Globe2, 
   Radio, 
   Sparkles,
-  GitPullRequest,
-  Coins
+  GitPullRequest
 } from 'lucide-react';
 import { GITHUB_REPO_URL, GITHUB_RELEASES_URL } from '../data/kaspaData';
 import { GitHubRelease } from '../types';
@@ -34,7 +33,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#14161C] border border-[#70C7BA]/40 text-xs font-mono text-[#70C7BA]">
             <Info className="w-3.5 h-3.5" />
-            <span>ABOUT KASPABROWSER</span>
+            <span>ABOUT KAZIUM</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             Privacy-First, Decentralized Android Web Browser &amp; Web3 Gateway
@@ -49,10 +48,10 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
             <div className="p-6 rounded-2xl bg-[#14161C] border border-[#282C37] space-y-4">
               <h3 className="text-xl font-bold text-white flex items-center gap-2.5">
                 <KaspaLogo className="w-5 h-5 rounded-full shadow-sm" />
-                <span>What is KaspaBrowser?</span>
+                <span>What is Kazium?</span>
               </h3>
               <p className="text-sm text-gray-300 leading-relaxed">
-                <strong>Kaspa Browser</strong> is a privacy-first, decentralized Android web browser and Web3 gateway designed for the BlockDAG network, featuring <strong>$KB</strong> as a community token.
+                <strong>Kazium</strong> is a privacy-first, decentralized Android web browser and Web3 gateway designed for the BlockDAG network.
               </p>
               <p className="text-sm text-gray-300 leading-relaxed">
                 Built with <strong>Kotlin</strong> and <strong>Jetpack Compose</strong>, it unifies standard web browsing with high-performance decentralized connectivity into a fast, privacy-first mobile client.
@@ -71,7 +70,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                 </span>
               </div>
               <p className="text-xs text-gray-400 leading-relaxed">
-                Security and sovereignty are fundamental to decentralized technology. KaspaBrowser is completely open source—all code for on-device cryptographic key management, Room SQLite database caching, and protocol interception is publicly verifiable on GitHub.
+                Security and sovereignty are fundamental to decentralized technology. Kazium is completely open source—all code for on-device cryptographic key management, Room SQLite database caching, and protocol interception is publicly verifiable on GitHub.
               </p>
               <div className="pt-2 flex flex-wrap items-center gap-3">
                 <a
@@ -142,16 +141,6 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                 <h4 className="text-sm font-bold text-white mb-1">Privacy &amp; Security Shield</h4>
                 <p className="text-xs text-gray-400 leading-relaxed">
                   HTTPS-only enforcement, live tracker interception, FIDO2 biometric passkeys, and one-tap Room DB purge.
-                </p>
-              </div>
-
-              <div className="p-4 rounded-xl bg-[#14161C] border border-[#282C37] hover:border-[#70C7BA]/40 transition-colors">
-                <div className="w-8 h-8 rounded-lg bg-[#0C0D10] border border-[#282C37] flex items-center justify-center text-[#70C7BA] mb-2.5">
-                  <Coins className="w-4 h-4" />
-                </div>
-                <h4 className="text-sm font-bold text-white mb-1">$KB Community Token</h4>
-                <p className="text-xs text-gray-400 leading-relaxed">
-                  A community token on the Kaspa BlockDAG network.
                 </p>
               </div>
 

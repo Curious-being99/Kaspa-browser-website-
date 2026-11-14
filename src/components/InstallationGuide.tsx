@@ -7,7 +7,7 @@ export const InstallationGuide: React.FC = () => {
     {
       step: '01',
       title: 'Download Release APK',
-      desc: 'Download KaspaBrowser-release-signed.apk directly using the Auto Download button at the top of the page.',
+      desc: 'Download Kazium-release-signed.apk directly using the Auto Download button at the top of the page.',
       icon: <Download className="w-5 h-5 text-[#70C7BA]" />
     },
     {
@@ -19,7 +19,7 @@ export const InstallationGuide: React.FC = () => {
     {
       step: '03',
       title: 'Install & Launch',
-      desc: 'Tap "Install". KaspaBrowser installs cleanly without unnecessary permissions or background telemetry tracking.',
+      desc: 'Tap "Install". Kazium installs cleanly without unnecessary permissions or background telemetry tracking.',
       icon: <CheckCircle className="w-5 h-5 text-emerald-400" />
     },
     {
@@ -41,7 +41,7 @@ export const InstallationGuide: React.FC = () => {
             <span>SIDELOAD INSTRUCTIONS</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            How to Install KaspaBrowser on Android
+            How to Install Kazium on Android
           </h2>
           <p className="text-sm sm:text-base text-gray-400">
             Follow these 4 straightforward steps to sideload the signed APK on any device running Android 8.0 through Android 16.

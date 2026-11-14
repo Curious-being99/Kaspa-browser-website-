@@ -23,7 +23,7 @@ export const FaqSection: React.FC = () => {
             Frequently Asked Questions
           </h2>
           <p className="text-sm text-gray-400">
-            Everything you need to know about KaspaBrowser, its decentralized features, and APK safety.
+            Everything you need to know about Kazium, its decentralized features, and APK safety.
           </p>
         </div>
 

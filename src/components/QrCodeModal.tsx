@@ -95,7 +95,7 @@ export const QrCodeModal: React.FC<QrCodeModalProps> = ({
         <div className="mx-auto w-64 h-64 p-3 bg-[#0C0D10] rounded-2xl border border-[#70C7BA]/40 flex items-center justify-center shadow-inner relative group">
           <img 
             src={qrApiUrl} 
-            alt="KaspaBrowser APK Download QR Code" 
+            alt="Kazium APK Download QR Code" 
             className="w-full h-full object-contain rounded-lg"
             loading="eager"
           />

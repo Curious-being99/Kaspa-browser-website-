@@ -13,7 +13,6 @@ import { KaspaLogo } from './KaspaLogo';
 import { GitHubRelease, GitHubRepoMeta } from '../types';
 import { GITHUB_REPO_URL } from '../data/kaspaData';
 import { formatBytes, getPreferredDownloadAsset } from '../services/githubService';
-import { KB_TOKEN_CONTRACT } from '../services/tokenService';
 import heroBgImage from '../assets/images/kaspa_blockdag_hero_background_1793176557783.jpg';
 
 interface HeroSectionProps {
@@ -30,15 +29,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   isDownloading
 }) => {
   const [copiedHash, setCopiedHash] = useState(false);
-  const [copiedContract, setCopiedContract] = useState(false);
   const preferredAsset = latestRelease ? getPreferredDownloadAsset(latestRelease) : null;
   const shaDigest = preferredAsset?.digest || null;
-
-  const copyContractToClipboard = async () => {
-      await navigator.clipboard.writeText(KB_TOKEN_CONTRACT);
-      setCopiedContract(true);
-      setTimeout(() => setCopiedContract(false), 2000);
-  };
 
   const copyHashToClipboard = async () => {
     if (!shaDigest) return;
@@ -100,7 +92,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </h1>
 
             <p className="text-lg text-gray-400 max-w-xl leading-relaxed">
-              Engineered for speed, privacy, and decentralized connectivity. KaspaBrowser is your native gateway to the Kaspa BlockDAG ecosystem, with $KB, a community token on Kaspa.
+              Engineered for speed, privacy, and decentralized connectivity. Kazium is your native gateway to the Kaspa BlockDAG ecosystem.
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
@@ -126,17 +118,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <span>View on GitHub</span>
                 <ChevronRight className="w-5 h-5 opacity-50" />
               </a>
-            </div>
-
-            <div className="flex items-center gap-3 text-xs font-mono text-gray-500">
-                <span className="text-[#70C7BA]">Contract:</span>
-                <button
-                  onClick={copyContractToClipboard}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:border-[#70C7BA]/40 transition-colors"
-                >
-                  <span className="truncate max-w-[300px]">{KB_TOKEN_CONTRACT}</span>
-                  <Copy className="w-3.5 h-3.5" />
-                </button>
             </div>
 
             {/* SHA Verification */}
@@ -170,7 +151,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                       <KaspaLogo className="w-6 h-6" />
                     </div>
                     <div>
-                      <div className="text-sm font-bold text-white">KaspaBrowser {latestRelease?.tag_name || 'v1.0'}</div>
+                      <div className="text-sm font-bold text-white">Kazium {latestRelease?.tag_name || 'v1.0'}</div>
                       <div className="text-[10px] text-gray-500 font-mono">Build: {latestRelease?.published_at ? new Date(latestRelease.published_at).toISOString().split('T')[0] : 'DATE UNAVAILABLE'}</div>
                     </div>
                   </div>
@@ -182,7 +163,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     { label: 'Network', value: 'BlockDAG' },
                     { label: 'Security', value: preferredAsset?.digest ? 'SHA-256 Published' : 'Checksum unavailable' },
                     { label: 'Core', value: 'Kotlin 2.0 Native' },
-                    { label: 'Features', value: '$KB + Si Agent' }
+                    { label: 'Features', value: 'Si Agent' }
                   ].map((stat, i) => (
                     <div key={i} className="flex items-center justify-between text-sm">
                       <span className="text-gray-500">{stat.label}</span>
