@@ -119,16 +119,23 @@ export function formatBytes(bytes: number, decimals = 1): string {
 }
 
 export function getPreferredDownloadAsset(release: GitHubRelease) {
-  const expectedPath = `/Curious-being99/Kaspa-browser-/releases/download/${encodeURIComponent(release.tag_name)}/KaspaBrowser-release-signed.apk`;
-  const asset = release.assets?.find(candidate => {
-    if (candidate.name !== 'KaspaBrowser-release-signed.apk' || typeof candidate.browser_download_url !== 'string') return false;
-    try {
-      const url = new URL(candidate.browser_download_url);
-      return url.protocol === 'https:' && url.hostname === 'github.com' && url.pathname === expectedPath;
-    } catch {
-      return false;
-    }
-  });
+  // Prefer the Kazium asset, while keeping downloads working for releases
+  // published before the APK rename.
+  const expectedNames = ['Kazium-release-signed.apk', 'KaspaBrowser-release-signed.apk'];
+  const asset = expectedNames
+    .map(name => {
+      const expectedPath = `/Curious-being99/Kaspa-browser-/releases/download/${encodeURIComponent(release.tag_name)}/${name}`;
+      return release.assets?.find(candidate => {
+        if (candidate.name !== name || typeof candidate.browser_download_url !== 'string') return false;
+        try {
+          const url = new URL(candidate.browser_download_url);
+          return url.protocol === 'https:' && url.hostname === 'github.com' && url.pathname === expectedPath;
+        } catch {
+          return false;
+        }
+      });
+    })
+    .find(Boolean);
   if (!asset) return null;
 
   const digest = typeof asset.digest === 'string' && /^sha256:[a-fA-F0-9]{64}$/.test(asset.digest)
@@ -140,7 +147,7 @@ export function getPreferredDownloadAsset(release: GitHubRelease) {
 export function triggerBrowserDownload(url: string, filename?: string) {
   const link = document.createElement('a');
   link.href = url;
-  link.download = filename || 'KaspaBrowser-release-signed.apk';
+  link.download = filename || 'Kazium-release-signed.apk';
   link.rel = 'noopener noreferrer';
   document.body.appendChild(link);
   link.click();
