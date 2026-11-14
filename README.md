@@ -36,7 +36,7 @@
 
 ---
 
-## 🌐 Official Web Portal & Release Tracker (`kazium.xyz`)
+## 🌐 Official Web Portal & Release Tracker 
 
 This repository also contains the official web presentation platform and automated release distributor:
 
